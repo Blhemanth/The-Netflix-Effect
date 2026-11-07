@@ -303,12 +303,71 @@ st.markdown("""
         font-weight: 500 !important;
         font-size: 0.92rem !important;
     }
+    /* Streamlit Selectbox & MultiSelect Clean Styling - Eliminates double border / outer square cover box */
     .stSelectbox div[data-baseweb="select"] {
-        background-color: #1c1c1c !important;
-        border: 1px solid #3a3a3a !important;
-        color: #FFFFFF !important;
+        border: none !important;
+        background-color: transparent !important;
     }
-    .stSelectbox div[data-baseweb="select"] span {
+    .stSelectbox div[data-baseweb="select"] > div {
+        background-color: #1a1a1a !important;
+        border: 1px solid #383838 !important;
+        border-radius: 8px !important;
+        color: #FFFFFF !important;
+        box-shadow: none !important;
+    }
+    .stSelectbox div[data-baseweb="select"] > div:hover {
+        border-color: #E50914 !important;
+    }
+    .stSelectbox div[data-baseweb="select"] > div:focus-within {
+        border-color: #E50914 !important;
+        box-shadow: 0 0 0 1px #E50914 !important;
+    }
+    .stSelectbox div[data-baseweb="select"] span,
+    .stSelectbox div[data-baseweb="select"] svg {
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+    }
+
+    /* MultiSelect Clean Styling */
+    .stMultiSelect div[data-baseweb="select"] {
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .stMultiSelect div[data-baseweb="select"] > div {
+        background-color: #1a1a1a !important;
+        border: 1px solid #383838 !important;
+        border-radius: 8px !important;
+        color: #FFFFFF !important;
+        box-shadow: none !important;
+    }
+    .stMultiSelect div[data-baseweb="select"] > div:hover {
+        border-color: #E50914 !important;
+    }
+    .stMultiSelect div[data-baseweb="select"] > div:focus-within {
+        border-color: #E50914 !important;
+        box-shadow: 0 0 0 1px #E50914 !important;
+    }
+
+    /* Text Input Clean Styling */
+    .stTextInput div[data-baseweb="input"] {
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .stTextInput div[data-baseweb="input"] > div {
+        background-color: #1a1a1a !important;
+        border: 1px solid #383838 !important;
+        border-radius: 8px !important;
+        color: #FFFFFF !important;
+        box-shadow: none !important;
+    }
+    .stTextInput div[data-baseweb="input"] > div:hover {
+        border-color: #E50914 !important;
+    }
+    .stTextInput div[data-baseweb="input"] > div:focus-within {
+        border-color: #E50914 !important;
+        box-shadow: 0 0 0 1px #E50914 !important;
+    }
+    .stTextInput input {
         color: #FFFFFF !important;
     }
     .stExpander {
