@@ -15,16 +15,29 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Netflix Cinematic Dark Theme
+# Custom CSS for Netflix Cinematic Dark Theme with High-Contrast Typography
 st.markdown("""
 <style>
-    /* Global styles */
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+    /* Global styles & Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
     .stApp {
         background-color: #141414;
-        color: #FFFFFF;
+        color: #F0F0F0;
         font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* Headings high-contrast styling */
+    h1, h2, h3, h4, h5, h6 {
+        color: #FFFFFF !important;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    
+    .stMarkdown p, .stMarkdown li {
+        color: #E2E2E2 !important;
+        line-height: 1.7;
     }
 
     /* Sidebar customization */
@@ -40,76 +53,77 @@ st.markdown("""
     .netflix-logo-text {
         font-family: 'Bebas Neue', 'Impact', sans-serif;
         color: #E50914;
-        font-size: 2.6rem;
+        font-size: 2.7rem;
         letter-spacing: 2px;
         margin: 0;
         padding: 0;
-        text-shadow: 0 2px 10px rgba(229, 9, 20, 0.4);
+        text-shadow: 0 2px 12px rgba(229, 9, 20, 0.5);
     }
     .netflix-subtext {
-        color: #B3B3B3;
+        color: #C8C8C8;
         font-size: 0.85rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
+        font-weight: 600;
+        letter-spacing: 1px;
         margin-top: -6px;
         margin-bottom: 20px;
     }
 
     /* Hero Banner */
     .hero-container {
-        background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(35, 10, 12, 0.85) 60%, rgba(229, 9, 20, 0.25) 100%),
+        background: linear-gradient(135deg, rgba(20, 20, 20, 0.96) 0%, rgba(38, 10, 13, 0.90) 60%, rgba(229, 9, 20, 0.3) 100%),
                     radial-gradient(circle at top right, #38080a 0%, #141414 70%);
-        border: 1px solid #2b2b2b;
+        border: 1px solid #333333;
         border-left: 6px solid #E50914;
         padding: 28px 32px;
         border-radius: 12px;
         margin-bottom: 25px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     }
     .hero-title {
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 2.8rem;
+        font-size: 3rem;
         letter-spacing: 1.5px;
         color: #FFFFFF;
         margin-bottom: 8px;
+        line-height: 1.1;
     }
     .hero-title span {
         color: #E50914;
     }
     .hero-desc {
-        color: #D2D2D2;
+        color: #E8E8E8;
         font-size: 1.05rem;
         line-height: 1.6;
-        max-width: 950px;
+        max-width: 980px;
     }
 
     /* Metric Cards */
     .metric-card {
         background-color: #1a1a1a;
-        border: 1px solid #292929;
+        border: 1px solid #333333;
         border-top: 3px solid #E50914;
         border-radius: 10px;
         padding: 18px 20px;
         text-align: left;
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         margin-bottom: 12px;
     }
     .metric-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(229, 9, 20, 0.2);
+        box-shadow: 0 8px 25px rgba(229, 9, 20, 0.25);
         border-color: #E50914;
     }
     .metric-label {
-        font-size: 0.78rem;
+        font-size: 0.8rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: #A0A0A0;
+        color: #D0D0D0;
         margin-bottom: 6px;
     }
     .metric-value {
-        font-size: 2.1rem;
+        font-size: 2.15rem;
         font-weight: 800;
         color: #FFFFFF;
         line-height: 1.1;
@@ -119,27 +133,28 @@ st.markdown("""
         color: #E50914;
     }
     .metric-sub {
-        font-size: 0.8rem;
-        color: #8C8C8C;
+        font-size: 0.82rem;
+        color: #BFBFBF;
         display: flex;
         align-items: center;
         gap: 4px;
+        font-weight: 500;
     }
 
     /* Content Cards */
     .content-box {
         background-color: #191919;
-        border: 1px solid #282828;
+        border: 1px solid #303030;
         border-radius: 10px;
         padding: 22px 24px;
         margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     .content-box-header {
         font-size: 1.25rem;
         font-weight: 700;
         color: #FFFFFF;
-        border-bottom: 1px solid #2d2d2d;
+        border-bottom: 1px solid #333333;
         padding-bottom: 10px;
         margin-bottom: 15px;
         display: flex;
@@ -154,9 +169,9 @@ st.markdown("""
     .badge-netflix {
         background-color: #E50914;
         color: #FFFFFF;
-        font-size: 0.72rem;
+        font-size: 0.75rem;
         font-weight: 700;
-        padding: 3px 8px;
+        padding: 4px 9px;
         border-radius: 4px;
         letter-spacing: 0.5px;
         display: inline-block;
@@ -164,29 +179,31 @@ st.markdown("""
     }
     .badge-secondary {
         background-color: #2b2b2b;
-        color: #D2D2D2;
-        font-size: 0.72rem;
+        color: #FFFFFF;
+        font-size: 0.75rem;
         font-weight: 600;
-        padding: 3px 8px;
+        padding: 4px 9px;
         border-radius: 4px;
         display: inline-block;
+        border: 1px solid #3e3e3e;
     }
 
     /* Styled Quotes / Callouts */
     .quote-box {
-        background-color: #1c1516;
+        background-color: #1e1315;
         border-left: 4px solid #E50914;
         padding: 14px 18px;
         border-radius: 0 8px 8px 0;
         margin: 15px 0;
         font-style: italic;
-        color: #E0E0E0;
+        color: #F0F0F0;
+        font-weight: 500;
     }
 
     /* Chart Viewer Frame */
     .chart-frame {
         background-color: #161616;
-        border: 1px solid #2a2a2a;
+        border: 1px solid #2e2e2e;
         border-radius: 12px;
         padding: 16px;
         box-shadow: 0 6px 20px rgba(0,0,0,0.5);
@@ -194,13 +211,13 @@ st.markdown("""
     }
     .chart-caption {
         background-color: #1c1c1c;
-        border-left: 3px solid #E50914;
-        padding: 12px 16px;
+        border-left: 4px solid #E50914;
+        padding: 14px 18px;
         border-radius: 0 6px 6px 0;
-        font-size: 0.92rem;
-        color: #D0D0D0;
-        line-height: 1.5;
-        margin-top: 12px;
+        font-size: 0.95rem;
+        color: #EAEAEA;
+        line-height: 1.6;
+        margin-top: 14px;
     }
 
     /* Streamlit Tabs custom styling */
@@ -209,11 +226,11 @@ st.markdown("""
         background-color: #161616;
         padding: 8px 10px;
         border-radius: 8px;
-        border: 1px solid #282828;
+        border: 1px solid #2e2e2e;
     }
     .stTabs [data-baseweb="tab"] {
         border-radius: 6px;
-        color: #B3B3B3;
+        color: #CCCCCC;
         font-weight: 600;
         padding: 8px 16px;
         background-color: transparent;
@@ -227,15 +244,15 @@ st.markdown("""
     /* Recommendation Cards */
     .rec-card {
         background: linear-gradient(145deg, #1d1d1d 0%, #151515 100%);
-        border: 1px solid #2e2e2e;
+        border: 1px solid #333333;
         border-left: 5px solid #E50914;
         border-radius: 10px;
-        padding: 20px;
+        padding: 22px;
         margin-bottom: 18px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.4);
     }
     .rec-title {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 700;
         color: #FFFFFF;
         margin-bottom: 8px;
@@ -244,23 +261,52 @@ st.markdown("""
         gap: 8px;
     }
     .rec-pill {
-        background-color: rgba(229, 9, 20, 0.15);
+        background-color: rgba(229, 9, 20, 0.2);
         color: #ff4b55;
         border: 1px solid #E50914;
-        padding: 2px 10px;
+        padding: 3px 12px;
         border-radius: 20px;
         font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
     }
 
+    /* Streamlit Widget Label & Radio Overrides for Maximum Readability */
+    label[data-testid="stWidgetLabel"] p {
+        color: #F0F0F0 !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
+    }
+    .stRadio div[role="radiogroup"] label div p {
+        color: #E8E8E8 !important;
+        font-weight: 500 !important;
+        font-size: 0.92rem !important;
+    }
+    .stSelectbox div[data-baseweb="select"] {
+        background-color: #1c1c1c !important;
+        border: 1px solid #3a3a3a !important;
+        color: #FFFFFF !important;
+    }
+    .stSelectbox div[data-baseweb="select"] span {
+        color: #FFFFFF !important;
+    }
+    .stExpander {
+        border: 1px solid #333333 !important;
+        background-color: #161616 !important;
+        border-radius: 8px !important;
+    }
+    .stExpander summary span p {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+    }
+
     /* Footer */
     .footer-text {
         text-align: center;
-        color: #707070;
-        font-size: 0.8rem;
+        color: #AAAAAA;
+        font-size: 0.85rem;
         padding: 30px 0 10px 0;
-        border-top: 1px solid #222222;
+        border-top: 1px solid #282828;
         margin-top: 40px;
     }
 </style>
@@ -462,7 +508,7 @@ VIZ_REGISTRY = {
 
 
 # -----------------------------------------------------------------------------
-# 4. SIDEBAR NAVIGATION & INTERACTIVE FILTERS
+# 4. SIDEBAR NAVIGATION & FUNCTIONAL INTERACTIVE FILTERS
 # -----------------------------------------------------------------------------
 with st.sidebar:
     st.markdown("""
@@ -472,7 +518,7 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("<p style='font-weight:700; font-size:0.8rem; letter-spacing:1px; color:#A0A0A0; text-transform:uppercase;'>Navigation Menu</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-weight:700; font-size:0.8rem; letter-spacing:1px; color:#D8D8D8; text-transform:uppercase;'>Navigation Menu</p>", unsafe_allow_html=True)
     
     navigation_selection = st.radio(
         label="Select App Section",
@@ -486,45 +532,52 @@ with st.sidebar:
         label_visibility="collapsed"
     )
     
-    st.markdown("<hr style='border: none; border-top: 1px solid #222; margin: 20px 0;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border: none; border-top: 1px solid #282828; margin: 20px 0;'>", unsafe_allow_html=True)
     
     # Global Interactive Data Filter Section
-    with st.expander("⚡ Interactive Catalog Filter", expanded=False):
-        st.caption("Filter the underlying 8,807 Netflix records in real time:")
+    with st.expander("⚡ Interactive Catalog Filter", expanded=True):
+        st.markdown("<p style='color:#C8C8C8; font-size:0.82rem; margin-bottom:12px;'>Filter the underlying 8,807 Netflix records in real time:</p>", unsafe_allow_html=True)
         
-        filter_type = st.selectbox("Content Format:", ["All Content", "Movies Only", "TV Shows Only"])
+        # Working Content Type selectbox with dynamic filtering across Overview & Metrics
+        content_type = st.selectbox(
+            "Content Type",
+            options=["All", "Movie", "TV Show"],
+            index=0,
+            help="Filter catalog and dynamically update metrics displayed on the Overview & Metrics page"
+        )
         
         year_range = st.slider(
             "Release Year Range:",
             min_value=int(df["release_year"].min()),
             max_value=int(df["release_year"].max()),
-            value=(2000, 2021)
+            value=(1925, 2021)
         )
         
         # Rating options
         all_ratings = sorted(df["rating_filled"].unique())
-        default_ratings = [r for r in ["TV-MA", "TV-14", "TV-PG", "R", "PG-13"] if r in all_ratings]
+        default_ratings = [r for r in ["TV-MA", "TV-14", "TV-PG", "R", "PG-13", "TV-Y7", "TV-Y"] if r in all_ratings]
         filter_ratings = st.multiselect("Maturity Ratings:", all_ratings, default=default_ratings)
         
-        search_query = st.text_input("Quick Search (Title / Cast):", placeholder="e.g. Stranger Things, India...")
+        search_query = st.text_input("Quick Search (Title / Cast / Country):", placeholder="e.g. Stranger Things, India...")
 
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     st.markdown("""
-    <div style='background-color: #161616; border: 1px solid #262626; border-radius: 8px; padding: 12px; font-size: 0.75rem; color: #888;'>
+    <div style='background-color: #161616; border: 1px solid #2e2e2e; border-radius: 8px; padding: 12px; font-size: 0.78rem; color: #B0B0B0;'>
         <b style='color:#E50914;'>Project Metadata</b><br>
-        • Dataset: 8,807 Titles (Kaggle Official)<br>
-        • Visuals: 10 High-Res EDA Charts<br>
+        • Total Records: 8,807 Titles<br>
+        • High-Res Visuals: 10 PNG Charts<br>
         • Brand Engine: Netflix Black & Crimson<br>
-        • Status: Production Ready
+        • Status: Interactive & Production Ready
     </div>
     """, unsafe_allow_html=True)
 
 
-# Apply filters for dynamic components
+# Apply Content Type and multi-variable filters dynamically
 filtered_df = df.copy()
-if filter_type == "Movies Only":
+
+if content_type == "Movie":
     filtered_df = filtered_df[filtered_df["type"] == "Movie"]
-elif filter_type == "TV Shows Only":
+elif content_type == "TV Show":
     filtered_df = filtered_df[filtered_df["type"] == "TV Show"]
 
 filtered_df = filtered_df[
@@ -566,59 +619,184 @@ if navigation_selection == "🏠 Overview & Metrics":
     </div>
     """, unsafe_allow_html=True)
     
-    # Key KPI Metric Cards
-    total_titles = len(df)
-    movie_count = len(df[df["type"] == "Movie"])
-    tv_count = len(df[df["type"] == "TV Show"])
-    movie_pct = (movie_count / total_titles) * 100
-    tv_pct = (tv_count / total_titles) * 100
+    # Dynamic Metric Calculations based on Content Type filter
+    total_catalog = len(df)
+    total_active = len(filtered_df)
+    active_movies = len(filtered_df[filtered_df["type"] == "Movie"])
+    active_tv = len(filtered_df[filtered_df["type"] == "TV Show"])
     
+    movie_pct = (active_movies / total_active * 100) if total_active > 0 else 0.0
+    tv_pct = (active_tv / total_active * 100) if total_active > 0 else 0.0
+    
+    # Top rating in active slice
+    if not filtered_df.empty and filtered_df["rating_filled"].notna().any():
+        top_rating = filtered_df["rating_filled"].mode()[0]
+        top_rating_count = (filtered_df["rating_filled"] == top_rating).sum()
+        top_rating_pct = (top_rating_count / total_active * 100) if total_active > 0 else 0.0
+    else:
+        top_rating = "N/A"
+        top_rating_count = 0
+        top_rating_pct = 0.0
+
+    # Peak addition year in active slice
+    valid_added_years = filtered_df["year_added"].dropna()
+    if not valid_added_years.empty:
+        peak_year = int(valid_added_years.mode()[0])
+        peak_year_count = (valid_added_years == peak_year).sum()
+    else:
+        peak_year = "N/A"
+        peak_year_count = 0
+    
+    # Active Filter Status Notification Bar
+    filter_label_color = "#E50914" if content_type != "All" else "#FFFFFF"
+    active_ratio_pct = (total_active / total_catalog * 100) if total_catalog > 0 else 0
+    
+    st.markdown(f"""
+    <div style="display:flex; justify-content:space-between; align-items:center; background-color:#1c1c1c; border-left:4px solid #E50914; border-radius:6px; padding:12px 18px; margin-bottom:18px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span class="badge-netflix">ACTIVE FILTER</span>
+            <span style="font-weight:700; color:#FFFFFF; font-size:0.95rem;">Content Type: <span style="color:{filter_label_color}; font-weight:800;">{content_type}</span></span>
+        </div>
+        <div style="color:#D5D5D5; font-size:0.86rem; font-weight:500;">
+            Displaying <b>{total_active:,}</b> of <b>{total_catalog:,}</b> records (<b>{active_ratio_pct:.1f}%</b> of library)
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Dynamic 5 Metric Cards Responsive Grid
     col1, col2, col3, col4, col5 = st.columns(5)
     
-    with col1:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">Total Titles</div>
-            <div class="metric-value">{total_titles:,}</div>
-            <div class="metric-sub">Complete Global Catalog</div>
-        </div>
-        """, unsafe_allow_html=True)
+    if content_type == "All":
+        with col1:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Total Titles</div>
+                <div class="metric-value">{total_active:,}</div>
+                <div class="metric-sub">Complete Catalog (8,807)</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Movies Share</div>
+                <div class="metric-value">{movie_pct:.1f}<span>%</span></div>
+                <div class="metric-sub">{active_movies:,} Feature Films</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col3:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">TV Shows Share</div>
+                <div class="metric-value">{tv_pct:.1f}<span>%</span></div>
+                <div class="metric-sub">{active_tv:,} Episodic Series</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col4:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Top Maturity Tier</div>
+                <div class="metric-value">{top_rating}</div>
+                <div class="metric-sub">{top_rating_count:,} Titles ({top_rating_pct:.1f}%)</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col5:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Peak Addition Year</div>
+                <div class="metric-value">{peak_year}</div>
+                <div class="metric-sub">{peak_year_count:,} Titles Ingested</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+    elif content_type == "Movie":
+        median_movie_min = int(filtered_df["duration_num"].median()) if not filtered_df["duration_num"].dropna().empty else 98
+        avg_movie_min = filtered_df["duration_num"].mean() if not filtered_df["duration_num"].dropna().empty else 99.6
         
-    with col2:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">Movies Share</div>
-            <div class="metric-value">{movie_pct:.1f}<span>%</span></div>
-            <div class="metric-sub">{movie_count:,} Feature Films</div>
-        </div>
-        """, unsafe_allow_html=True)
+        with col1:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Total Movies</div>
+                <div class="metric-value">{total_active:,}</div>
+                <div class="metric-sub">{active_ratio_pct:.1f}% of Catalog</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Median Runtime</div>
+                <div class="metric-value">{median_movie_min} <span>min</span></div>
+                <div class="metric-sub">Mean: {avg_movie_min:.1f} Mins</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col3:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Format Share</div>
+                <div class="metric-value">100<span>%</span></div>
+                <div class="metric-sub">Films Exclusive View</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col4:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Top Movie Rating</div>
+                <div class="metric-value">{top_rating}</div>
+                <div class="metric-sub">{top_rating_count:,} Films ({top_rating_pct:.1f}%)</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col5:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Peak Addition Year</div>
+                <div class="metric-value">{peak_year}</div>
+                <div class="metric-sub">{peak_year_count:,} Films Ingested</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+    else:  # TV Show
+        single_season_count = (filtered_df["duration_num"] == 1).sum() if not filtered_df.empty else 1793
+        single_season_pct = (single_season_count / total_active * 100) if total_active > 0 else 67.0
         
-    with col3:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">TV Shows Share</div>
-            <div class="metric-value">{tv_pct:.1f}<span>%</span></div>
-            <div class="metric-sub">{tv_count:,} Episodic Series</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with col4:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">Top Maturity Tier</div>
-            <div class="metric-value">TV-MA</div>
-            <div class="metric-sub">3,207 Titles (36.4%)</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with col5:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">Peak Addition Year</div>
-            <div class="metric-value">2019</div>
-            <div class="metric-sub">2,016 Titles Ingested</div>
-        </div>
-        """, unsafe_allow_html=True)
+        with col1:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Total TV Shows</div>
+                <div class="metric-value">{total_active:,}</div>
+                <div class="metric-sub">{active_ratio_pct:.1f}% of Catalog</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">1-Season Skew</div>
+                <div class="metric-value">{single_season_pct:.1f}<span>%</span></div>
+                <div class="metric-sub">{single_season_count:,} Single-Season Shows</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col3:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Format Share</div>
+                <div class="metric-value">100<span>%</span></div>
+                <div class="metric-sub">TV Series Exclusive View</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col4:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Top TV Rating</div>
+                <div class="metric-value">{top_rating}</div>
+                <div class="metric-sub">{top_rating_count:,} Shows ({top_rating_pct:.1f}%)</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col5:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Peak Addition Year</div>
+                <div class="metric-value">{peak_year}</div>
+                <div class="metric-sub">{peak_year_count:,} Shows Ingested</div>
+            </div>
+            """, unsafe_allow_html=True)
     
     st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
     
@@ -631,7 +809,7 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="content-box-header">
                 <span class="icon">⚖️</span> The 70 / 30 Asymmetry
             </div>
-            <p style="color: #c7c7c7; font-size: 0.9rem; line-height: 1.6;">
+            <p style="color: #E2E2E2; font-size: 0.92rem; line-height: 1.6;">
                 While Movies dominate raw catalog count (<b>69.6%</b>), TV Shows generate higher 
                 aggregate watch time and defend against monthly churn. Netflix leverages movies as 
                 instant catalog bulk while relying on serialized shows as its subscriber retention moat.
@@ -649,7 +827,7 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="content-box-header">
                 <span class="icon">🚀</span> The 2016 Global Scaling Surge
             </div>
-            <p style="color: #c7c7c7; font-size: 0.9rem; line-height: 1.6;">
+            <p style="color: #E2E2E2; font-size: 0.92rem; line-height: 1.6;">
                 Following its simultaneous launch across 130 countries in January 2016, Netflix shifted 
                 from third-party Hollywood leasing to self-commissioned Originals. Annual additions surged 
                 by <b>370%</b> to peak in 2019, creating the contemporary streaming era.
@@ -667,7 +845,7 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="content-box-header">
                 <span class="icon">🌐</span> The Local-for-Global Playbook
             </div>
-            <p style="color: #c7c7c7; font-size: 0.9rem; line-height: 1.6;">
+            <p style="color: #E2E2E2; font-size: 0.92rem; line-height: 1.6;">
                 International content represents over <b>45%</b> of new catalog additions. Production 
                 powerhouses like India (1,046 titles), UK (804), South Korea, and Spain produce regional stories 
                 engineered with universal emotional arcs that travel across global borders.
@@ -679,7 +857,7 @@ if navigation_selection == "🏠 Overview & Metrics":
         </div>
         """, unsafe_allow_html=True)
         
-    # Quick Featured Chart Duo
+    # Quick Featured Chart Duo with Crisp Scaling
     st.markdown("<h3 style='color:#FFFFFF; font-size:1.4rem; margin-top:15px; margin-bottom:15px;'>📸 Featured Core Visualizations</h3>", unsafe_allow_html=True)
     
     fcol1, fcol2 = st.columns(2)
@@ -695,7 +873,7 @@ if navigation_selection == "🏠 Overview & Metrics":
     # Interactive Catalog Explorer Section
     st.markdown("<hr style='border-color:#2a2a2a; margin:30px 0;'>", unsafe_allow_html=True)
     st.markdown("<h3 style='color:#FFFFFF; font-size:1.4rem;'>🔍 Live Interactive Catalog Explorer</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:#999; font-size:0.9rem;'>Currently displaying <b>{len(filtered_df):,}</b> matching titles based on your sidebar filter criteria (Format: {filter_type}, Years: {year_range[0]}–{year_range[1]}):</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color:#D0D0D0; font-size:0.92rem;'>Currently displaying <b>{len(filtered_df):,}</b> matching titles based on your active sidebar filter criteria (Content Type: <b>{content_type}</b>, Release Years: <b>{year_range[0]}–{year_range[1]}</b>):</p>", unsafe_allow_html=True)
     
     # Table display columns
     display_cols = ["show_id", "title", "type", "release_year", "rating_filled", "duration", "country_filled", "listed_in"]
@@ -723,7 +901,7 @@ if navigation_selection == "🏠 Overview & Metrics":
     st.download_button(
         label="📥 Download Filtered Dataset (CSV)",
         data=csv_buffer.getvalue(),
-        file_name="netflix_filtered_dataset.csv",
+        file_name=f"netflix_filtered_{content_type.lower()}_dataset.csv",
         mime="text/csv",
         help="Export the currently filtered Netflix titles into a clean CSV file"
     )
@@ -735,10 +913,10 @@ if navigation_selection == "🏠 Overview & Metrics":
 elif navigation_selection == "📊 Visualizations & EDA":
     st.markdown("""
     <div style="border-bottom: 2px solid #E50914; padding-bottom: 10px; margin-bottom: 25px;">
-        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.5rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
+        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.6rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
             EXPLORATORY DATA ANALYSIS <span style="color:#E50914;">GALLERY</span>
         </h2>
-        <p style="color:#9e9e9e; font-size:0.95rem; margin-top:4px;">
+        <p style="color:#D2D2D2; font-size:0.95rem; margin-top:4px;">
             Detailed inspection of all 10 high-resolution analytical charts capturing format dynamics, runtimes, maturity ratings, and international expansion.
         </p>
     </div>
@@ -782,7 +960,7 @@ elif navigation_selection == "📊 Visualizations & EDA":
         </div>
         """, unsafe_allow_html=True)
         
-        # Display Image
+        # Display Image with crisp wide container scaling
         if os.path.exists(v_info["file"]):
             img = Image.open(v_info["file"])
             st.image(img, use_container_width=True)
@@ -800,7 +978,7 @@ elif navigation_selection == "📊 Visualizations & EDA":
                 </div>
             """, unsafe_allow_html=True)
             for insight in v_info["insights"]:
-                st.markdown(f"<p style='color:#D0D0D0; font-size:0.92rem; line-height:1.6; margin-bottom:8px;'>• {insight}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='color:#E2E2E2; font-size:0.94rem; line-height:1.6; margin-bottom:8px;'>• {insight}</p>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
             
         with col_right:
@@ -809,11 +987,11 @@ elif navigation_selection == "📊 Visualizations & EDA":
                 <div class="content-box-header">
                     <span class="icon">🎯</span> Strategic Business Takeaway
                 </div>
-                <div style="background-color:#222; padding:12px; border-radius:6px; margin-bottom:12px;">
-                    <div style="font-size:0.75rem; color:#A0A0A0; font-weight:700; text-transform:uppercase;">Key Benchmark</div>
-                    <div style="font-size:1.1rem; color:#E50914; font-weight:800;">{v_info['metric_highlight']}</div>
+                <div style="background-color:#222222; padding:14px; border-radius:6px; margin-bottom:12px; border:1px solid #333333;">
+                    <div style="font-size:0.75rem; color:#D0D0D0; font-weight:700; text-transform:uppercase;">Key Benchmark</div>
+                    <div style="font-size:1.15rem; color:#E50914; font-weight:800;">{v_info['metric_highlight']}</div>
                 </div>
-                <p style="color:#D0D0D0; font-size:0.9rem; line-height:1.6;">
+                <p style="color:#E2E2E2; font-size:0.92rem; line-height:1.6;">
                     {v_info['actionable_takeaway']}
                 </p>
             </div>
@@ -825,9 +1003,9 @@ elif navigation_selection == "📊 Visualizations & EDA":
         
         for k, v in VIZ_REGISTRY.items():
             st.markdown(f"""
-            <div style="background-color:#181818; border:1px solid #282828; border-top:3px solid #E50914; border-radius:10px; padding:20px; margin-bottom:30px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h3 style="color:#FFFFFF; margin:0; font-size:1.3rem;">{v['full_title']}</h3>
+            <div style="background-color:#181818; border:1px solid #303030; border-top:3px solid #E50914; border-radius:10px; padding:20px; margin-bottom:30px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <h3 style="color:#FFFFFF; margin:0; font-size:1.35rem;">{v['full_title']}</h3>
                     <span class="badge-secondary">{v['category']}</span>
                 </div>
             """, unsafe_allow_html=True)
@@ -840,7 +1018,7 @@ elif navigation_selection == "📊 Visualizations & EDA":
                 
             st.markdown(f"""
                 <div class="chart-caption">
-                    <b>Executive Caption:</b> {v['caption']}<br>
+                    <b style="color:#FFFFFF;">Executive Caption:</b> {v['caption']}<br>
                     <span style="color:#E50914; font-weight:700;">Strategic Action:</span> {v['actionable_takeaway']}
                 </div>
             </div>
@@ -853,10 +1031,10 @@ elif navigation_selection == "📊 Visualizations & EDA":
 elif navigation_selection == "💡 Analytical Insights":
     st.markdown("""
     <div style="border-bottom: 2px solid #E50914; padding-bottom: 10px; margin-bottom: 25px;">
-        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.5rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
+        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.6rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
             DEEP ANALYTICAL <span style="color:#E50914;">INSIGHTS</span>
         </h2>
-        <p style="color:#9e9e9e; font-size:0.95rem; margin-top:4px;">
+        <p style="color:#D2D2D2; font-size:0.95rem; margin-top:4px;">
             Comprehensive synthesis of structural catalog dynamics, content format dominance, 
             algorithmic scaling post-2016, and demographic audience targeting.
         </p>
@@ -878,10 +1056,10 @@ elif navigation_selection == "💡 Analytical Insights":
         with col1:
             st.markdown("""
             <div class="content-box">
-                <p style="color:#E0E0E0; line-height:1.7;">
+                <p style="color:#E8E8E8; line-height:1.7;">
                     A fundamental paradox in Netflix's catalog architecture is the disparity between catalog volume and user engagement:
                 </p>
-                <ul style="color:#D0D0D0; line-height:1.8;">
+                <ul style="color:#E0E0E0; line-height:1.8;">
                     <li><b>69.6% Movies (6,131 titles):</b> Films provide immediate catalog density and breadth. A user browsing on a Friday evening often looks for a self-contained 95-minute experience. Film licensing deals historically allowed Netflix to populate new country launches rapidly.</li>
                     <li><b>30.4% TV Shows (2,676 titles):</b> Despite holding less than one-third of titles, episodic TV series drive an estimated <b>75%+ of total platform viewing hours</b>. A multi-season drama commands 10 to 50 hours of viewer commitment compared to 1.5 hours for a feature film.</li>
                     <li><b>Economic Unit Economics:</b> While TV series require higher upfront production budgets, their cost per engaged hour is drastically lower than blockbuster films, rendering episodic television Netflix's primary defensive moat against churn.</li>
@@ -904,10 +1082,10 @@ elif navigation_selection == "💡 Analytical Insights":
         with col1:
             st.markdown("""
             <div class="content-box">
-                <p style="color:#E0E0E0; line-height:1.7;">
+                <p style="color:#E8E8E8; line-height:1.7;">
                     The year 2016 represents the defining structural turning point in Netflix's business history:
                 </p>
-                <ul style="color:#D0D0D0; line-height:1.8;">
+                <ul style="color:#E0E0E0; line-height:1.8;">
                     <li><b>The CES 2016 Global Switch:</b> On January 6, 2016, CEO Reed Hastings announced Netflix went live in 130 countries simultaneously, transforming the company overnight into the world's first truly planetary streaming network.</li>
                     <li><b>Annual Additions Surged by 370%:</b> Between 2016 (429 additions) and 2019 (2,016 additions), annual content ingestion expanded at a CAGR exceeding 65%.</li>
                     <li><b>The Original IP Hedge:</b> As traditional Hollywood studios (Disney, WarnerMedia, NBCUniversal) prepared their own direct-to-consumer platforms, they began clawing back licensed titles. Netflix responded by spending billions to construct an unassailable proprietary IP vault.</li>
@@ -925,10 +1103,10 @@ elif navigation_selection == "💡 Analytical Insights":
         with col1:
             st.markdown("""
             <div class="content-box">
-                <p style="color:#E0E0E0; line-height:1.7;">
+                <p style="color:#E8E8E8; line-height:1.7;">
                     Categorization patterns across the 8,807 titles reveal how genre diversification drives cross-demographic penetration:
                 </p>
-                <ul style="color:#D0D0D0; line-height:1.8;">
+                <ul style="color:#E0E0E0; line-height:1.8;">
                     <li><b>International Content Dominance:</b> Over 4,100 titles carry the 'International' designation, making cross-border stories the single largest content block on the platform.</li>
                     <li><b>Dramas & Comedies as Retention Anchors:</b> Dramas (2,427) and Comedies (1,674) satisfy universal human storytelling desires, traveling with minimal cultural friction when properly dubbed and subtitled.</li>
                     <li><b>The High-ROI Stand-Up Comedy Moat:</b> Stand-up comedy specials cost a fraction of scripted dramas (often <$15M) yet deliver viral cultural conversations, awards buzz, and immediate social media engagement.</li>
@@ -946,10 +1124,10 @@ elif navigation_selection == "💡 Analytical Insights":
         with col1:
             st.markdown("""
             <div class="content-box">
-                <p style="color:#E0E0E0; line-height:1.7;">
+                <p style="color:#E8E8E8; line-height:1.7;">
                     The ratings breakdown illuminates Netflix's deliberate counter-programming strategy against broadcast TV:
                 </p>
-                <ul style="color:#D0D0D0; line-height:1.8;">
+                <ul style="color:#E0E0E0; line-height:1.8;">
                     <li><b>60.9% Mature Audience Share:</b> TV-MA (3,207 titles | 36.4%) and TV-14 (2,160 titles | 24.5%) constitute the vast majority of Netflix offerings.</li>
                     <li><b>Creative Freedom as a Talent Magnet:</b> Without the FCC broadcast decency constraints or PG-13 box-office dilution, top showrunners (e.g., David Fincher, Shonda Rhimes, the Duffer Brothers) migrated to Netflix for complete creative autonomy.</li>
                     <li><b>The Family Gap:</b> Combined kids programming (TV-Y, TV-Y7, G, TV-G) represents only ~10.2% of the library. This gap exposes Netflix to subscription cannibalization from Disney+, which commands undisputed family loyalty.</li>
@@ -967,10 +1145,10 @@ elif navigation_selection == "💡 Analytical Insights":
         with col1:
             st.markdown("""
             <div class="content-box">
-                <p style="color:#E0E0E0; line-height:1.7;">
+                <p style="color:#E8E8E8; line-height:1.7;">
                     Mapping the geographical origin of titles reflects a seismic shift from Hollywood monoculture to distributed global studios:
                 </p>
-                <ul style="color:#D0D0D0; line-height:1.8;">
+                <ul style="color:#E0E0E0; line-height:1.8;">
                     <li><b>United States (3,689 titles):</b> Retains plurality at 41.9%, but its overall share of annual additions has steadily declined as international production centers scale up.</li>
                     <li><b>India as the #2 Content Engine (1,046 titles):</b> India boasts the largest non-Western library on Netflix, propelled by regional cinema (Hindi, Tamil, Telugu) and aggressive streaming deals with Bollywood studios.</li>
                     <li><b>Europe & Asia-Pacific Powerhouses:</b> The UK (804), Canada (445), France (393), Japan (318 anime/live-action), Spain (232), and South Korea (231) deliver extraordinary global return on investment, routinely topping Top 10 lists worldwide.</li>
@@ -988,10 +1166,10 @@ elif navigation_selection == "💡 Analytical Insights":
 elif navigation_selection == "🎯 Actionable Recommendations":
     st.markdown("""
     <div style="border-bottom: 2px solid #E50914; padding-bottom: 10px; margin-bottom: 25px;">
-        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.5rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
+        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.6rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
             STRATEGIC <span style="color:#E50914;">RECOMMENDATIONS</span>
         </h2>
-        <p style="color:#9e9e9e; font-size:0.95rem; margin-top:4px;">
+        <p style="color:#D2D2D2; font-size:0.95rem; margin-top:4px;">
             Data-backed executive roadmap for content acquisition, catalog rebalancing, and global subscriber retention.
         </p>
     </div>
@@ -1004,12 +1182,12 @@ elif navigation_selection == "🎯 Actionable Recommendations":
             <span>🎯 Pillar 1: Strategic Genre Investment & Hybridization</span>
             <span class="rec-pill">High Impact</span>
         </div>
-        <p style="color:#D2D2D2; font-size:0.92rem; line-height:1.6;">
+        <p style="color:#E2E2E2; font-size:0.94rem; line-height:1.6;">
             <b>The Insight:</b> While Dramas and Comedies form the catalog backbone, viewer fatigue in generic comedy specials is rising, while cross-genre titles (e.g. Sci-Fi Thrillers, Mystery Dramas) generate the highest viral completion rates.
         </p>
-        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px;">
+        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px; border:1px solid #2e2e2e;">
             <b style="color:#FFFFFF;">Actionable Mandate:</b>
-            <ul style="color:#B3B3B3; margin:6px 0 0 0; padding-left:20px; font-size:0.88rem; line-height:1.6;">
+            <ul style="color:#D0D0D0; margin:6px 0 0 0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
                 <li>Reallocate 15% of standalone comedy special budgets toward high-concept hybrid scripted mini-series.</li>
                 <li>Commission multi-generational mystery dramas with built-in social media speculation loops (e.g., Dark, Wednesday).</li>
                 <li>Target the 90–105 minute sweet spot for all mid-tier feature acquisitions to maximize algorithmic completion score.</li>
@@ -1025,12 +1203,12 @@ elif navigation_selection == "🎯 Actionable Recommendations":
             <span>🌍 Pillar 2: Hyper-Localized Expansion with Global Export DNA</span>
             <span class="rec-pill">Critical Growth</span>
         </div>
-        <p style="color:#D2D2D2; font-size:0.92rem; line-height:1.6;">
+        <p style="color:#E2E2E2; font-size:0.94rem; line-height:1.6;">
             <b>The Insight:</b> Non-US production hubs deliver viral hits with up to 70% lower production costs compared to Hollywood standards. South Korea and Spain have demonstrated that local cultural authenticity outperforms homogenized international corporate blockbusters.
         </p>
-        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px;">
+        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px; border:1px solid #2e2e2e;">
             <b style="color:#FFFFFF;">Actionable Mandate:</b>
-            <ul style="color:#B3B3B3; margin:6px 0 0 0; padding-left:20px; font-size:0.88rem; line-height:1.6;">
+            <ul style="color:#D0D0D0; margin:6px 0 0 0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
                 <li>Establish dedicated production hubs in Southeast Asia (Indonesia, Philippines, Vietnam) and Latin America (Colombia, Argentina).</li>
                 <li>Mandate multi-language native audio dubbing and culturally nuanced subtitling for top 20% regional productions on day 1.</li>
                 <li>Deepen partnerships with regional Indian animation studios to build enduring franchises that match Bollywood theatrical pull.</li>
@@ -1046,12 +1224,12 @@ elif navigation_selection == "🎯 Actionable Recommendations":
             <span>🧸 Pillar 3: Family Catalog & Demographics Optimization</span>
             <span class="rec-pill">Retention Defense</span>
         </div>
-        <p style="color:#D2D2D2; font-size:0.92rem; line-height:1.6;">
+        <p style="color:#E2E2E2; font-size:0.94rem; line-height:1.6;">
             <b>The Insight:</b> With mature titles (TV-MA & TV-14) representing over 60.9% of the catalog, family and children programming languishes at ~10.2%. Household accounts with young children exhibit 40% lower churn if family content is regularly refreshed.
         </p>
-        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px;">
+        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px; border:1px solid #2e2e2e;">
             <b style="color:#FFFFFF;">Actionable Mandate:</b>
-            <ul style="color:#B3B3B3; margin:6px 0 0 0; padding-left:20px; font-size:0.88rem; line-height:1.6;">
+            <ul style="color:#D0D0D0; margin:6px 0 0 0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
                 <li>Expand the Kids & Family catalog from 10.2% to at least 18% over the next 36 months to neutralize Disney+'s core advantage.</li>
                 <li>Develop animated universe franchises that create recurring episodic viewing habits for children under 10.</li>
                 <li>Co-produce with European and Japanese animation studios (e.g., Studio Ghibli licensing, French boutique animators).</li>
@@ -1067,12 +1245,12 @@ elif navigation_selection == "🎯 Actionable Recommendations":
             <span>📺 Pillar 4: Series Longevity & Overcoming the 1-Season Cliff</span>
             <span class="rec-pill">Churn Mitigation</span>
         </div>
-        <p style="color:#D2D2D2; font-size:0.92rem; line-height:1.6;">
+        <p style="color:#E2E2E2; font-size:0.94rem; line-height:1.6;">
             <b>The Insight:</b> Two-thirds (67.0%) of TV shows end after Season 1. Excessive early cancellations create viewer hesitation, where subscribers refuse to invest time in new shows until guaranteed renewal.
         </p>
-        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px;">
+        <div style="background-color:#141414; border-left:3px solid #E50914; padding:12px 16px; border-radius:0 6px 6px 0; margin-top:10px; border:1px solid #2e2e2e;">
             <b style="color:#FFFFFF;">Actionable Mandate:</b>
-            <ul style="color:#B3B3B3; margin:6px 0 0 0; padding-left:20px; font-size:0.88rem; line-height:1.6;">
+            <ul style="color:#D0D0D0; margin:6px 0 0 0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
                 <li>Market single-season projects transparently as 'Limited Series' with satisfying narrative conclusions.</li>
                 <li>Implement a lower-budget Season 2 renewal tier for cult shows with passionate core fanbases to preserve loyalty.</li>
                 <li>Use predictive AI to greenlight two-season commitments for high-probability concepts, lowering per-season fixed costs.</li>
@@ -1082,7 +1260,7 @@ elif navigation_selection == "🎯 Actionable Recommendations":
     """, unsafe_allow_html=True)
     
     # Strategic Impact vs Effort Matrix
-    st.markdown("<h3 style='color:#FFFFFF; font-size:1.3rem; margin-top:25px;'>📊 Strategic Execution Priority Matrix</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#FFFFFF; font-size:1.35rem; margin-top:25px;'>📊 Strategic Execution Priority Matrix</h3>", unsafe_allow_html=True)
     
     matrix_data = pd.DataFrame([
         {"Strategic Initiative": "Family Catalog Expansion (Animation)", "Impact": "Very High", "Effort": "High", "Time Horizon": "24–36 Months", "Primary KPI Target": "-15% Family Churn"},
@@ -1101,10 +1279,10 @@ elif navigation_selection == "🎯 Actionable Recommendations":
 elif navigation_selection == "📖 Data Storytelling Report":
     st.markdown("""
     <div style="border-bottom: 2px solid #E50914; padding-bottom: 10px; margin-bottom: 25px;">
-        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.5rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
+        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.6rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
             THE DATA STORYTELLING <span style="color:#E50914;">REPORT</span>
         </h2>
-        <p style="color:#9e9e9e; font-size:0.95rem; margin-top:4px;">
+        <p style="color:#D2D2D2; font-size:0.95rem; margin-top:4px;">
             A publication-grade narrative report following the structured framework: 
             <b>Problem ➔ Analysis ➔ Insights ➔ Strategic Recommendations</b>.
         </p>
@@ -1117,13 +1295,13 @@ elif navigation_selection == "📖 Data Storytelling Report":
         <div class="content-box-header">
             <span class="icon">🚨</span> ACT I: THE STRATEGIC PROBLEM
         </div>
-        <p style="color:#D2D2D2; line-height:1.8;">
+        <p style="color:#E2E2E2; line-height:1.8;">
             Between 2015 and 2021, the global streaming landscape experienced an unprecedented transition from an era of scarce digital aggregators 
             to the brutal, hyper-competitive <b>"Streaming Wars"</b>. Traditional media conglomerates—having happily licensed their back-catalogs to Netflix for 
             years—abruptly clawed back their flagship intellectual properties (e.g. <i>Friends</i>, <i>The Office</i>, Marvel, Star Wars) to launch rival 
             platforms like Disney+, HBO Max, and Peacock.
         </p>
-        <p style="color:#D2D2D2; line-height:1.8;">
+        <p style="color:#E2E2E2; line-height:1.8;">
             Faced with the existential threat of catalog starvation, Netflix confronted a multi-billion dollar question: 
             <b>What makes content successful and enduring on a modern streaming platform?</b> Can proprietary algorithms, runtime discipline, 
             maturity calibration, and international studio scaling replace century-old legacy Hollywood studio dominance?
@@ -1137,23 +1315,23 @@ elif navigation_selection == "📖 Data Storytelling Report":
         <div class="content-box-header">
             <span class="icon">📊</span> ACT II: THE EMPIRICAL ANALYSIS
         </div>
-        <p style="color:#D2D2D2; line-height:1.8;">
+        <p style="color:#E2E2E2; line-height:1.8;">
             To answer this question, our data science team audited the entire available Netflix metadata catalog comprising <b>8,807 registered titles</b> 
             spanning release years from 1925 through 2021. Through rigorous feature engineering, temporal decomposition, and distribution modeling across 
             10 analytical dimensions, key empirical patterns emerged:
         </p>
         <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin:15px 0;">
-            <div style="background-color:#111; padding:12px; border-left:3px solid #E50914; border-radius:4px;">
-                <b style="color:#fff;">Volume Asymmetry:</b> 6,131 Movies (69.6%) vs. 2,676 TV Shows (30.4%).
+            <div style="background-color:#111111; padding:14px; border-left:3px solid #E50914; border-radius:4px; border:1px solid #282828;">
+                <b style="color:#FFFFFF;">Volume Asymmetry:</b> <span style="color:#E2E2E2;">6,131 Movies (69.6%) vs. 2,676 TV Shows (30.4%).</span>
             </div>
-            <div style="background-color:#111; padding:12px; border-left:3px solid #E50914; border-radius:4px;">
-                <b style="color:#fff;">Runtime Sweet Spot:</b> Gaussian bell curve centered at median 98 minutes for feature films.
+            <div style="background-color:#111111; padding:14px; border-left:3px solid #E50914; border-radius:4px; border:1px solid #282828;">
+                <b style="color:#FFFFFF;">Runtime Sweet Spot:</b> <span style="color:#E2E2E2;">Gaussian bell curve centered at median 98 minutes for feature films.</span>
             </div>
-            <div style="background-color:#111; padding:12px; border-left:3px solid #E50914; border-radius:4px;">
-                <b style="color:#fff;">The 1-Season Attrition:</b> 67.0% of all TV shows terminate after a single season.
+            <div style="background-color:#111111; padding:14px; border-left:3px solid #E50914; border-radius:4px; border:1px solid #282828;">
+                <b style="color:#FFFFFF;">The 1-Season Attrition:</b> <span style="color:#E2E2E2;">67.0% of all TV shows terminate after a single season.</span>
             </div>
-            <div style="background-color:#111; padding:12px; border-left:3px solid #E50914; border-radius:4px;">
-                <b style="color:#fff;">Maturity Dominance:</b> TV-MA and TV-14 capture 60.9% of total catalog real estate.
+            <div style="background-color:#111111; padding:14px; border-left:3px solid #E50914; border-radius:4px; border:1px solid #282828;">
+                <b style="color:#FFFFFF;">Maturity Dominance:</b> <span style="color:#E2E2E2;">TV-MA and TV-14 capture 60.9% of total catalog real estate.</span>
             </div>
         </div>
     </div>
@@ -1165,10 +1343,10 @@ elif navigation_selection == "📖 Data Storytelling Report":
         <div class="content-box-header">
             <span class="icon">💡</span> ACT III: SYNTHESIZED CORE INSIGHTS
         </div>
-        <p style="color:#D2D2D2; line-height:1.8;">
+        <p style="color:#E2E2E2; line-height:1.8;">
             The findings demonstrate that Netflix's catalog architecture is governed by four distinct strategic pillars:
         </p>
-        <ol style="color:#D0D0D0; line-height:1.8;">
+        <ol style="color:#E2E2E2; line-height:1.8;">
             <li><b>The Post-2016 Exponential J-Curve:</b> Catalyzed by the CES 2016 expansion into 130+ markets, annual additions exploded by over 370%, peaking in 2019 at 2,016 additions before supply-chain rationalization set in.</li>
             <li><b>The Adult Streaming Safe-Haven:</b> By leaning into TV-MA programming, Netflix differentiated itself fundamentally from broadcast networks and Disney's family image, making edgy scripted drama its cultural trademark.</li>
             <li><b>The Local-to-Global Cross-Pollination:</b> Non-English content hubs (India, South Korea, Spain, France) ceased being local defensive hedges; they became global export engines generating unmatched viral ROI.</li>
@@ -1183,10 +1361,10 @@ elif navigation_selection == "📖 Data Storytelling Report":
         <div class="content-box-header">
             <span class="icon">🎯</span> ACT IV: STRATEGIC RECOMMENDATIONS & FORWARD ROADMAP
         </div>
-        <p style="color:#D2D2D2; line-height:1.8;">
+        <p style="color:#E2E2E2; line-height:1.8;">
             Based on the empirical evidence, the following executive actions are recommended for platform leadership:
         </p>
-        <ul style="color:#D0D0D0; line-height:1.8;">
+        <ul style="color:#E2E2E2; line-height:1.8;">
             <li><b>Repair the Family Moat:</b> Expand Kids & Family programming from 10.2% to 18% to safeguard multi-user household retention against Disney+.</li>
             <li><b>Mitigate Viewer Hesitation from 1-Season Cancellations:</b> Pre-package short-run series as 'Limited Series' so subscribers receive narrative resolution without cancellation disappointment.</li>
             <li><b>Institutionalize Global Localization Infrastructure:</b> Deepen AI-assisted localization, dubbing, and cultural translation pipelines to accelerate cross-border hit discovery.</li>
@@ -1196,7 +1374,7 @@ elif navigation_selection == "📖 Data Storytelling Report":
     """, unsafe_allow_html=True)
     
     # Interactive Knowledge Check
-    st.markdown("<h3 style='color:#FFFFFF; font-size:1.3rem; margin-top:25px;'>🧠 Interactive Quiz: Test Your Netflix Data Knowledge</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#FFFFFF; font-size:1.35rem; margin-top:25px;'>🧠 Interactive Quiz: Test Your Netflix Data Knowledge</h3>", unsafe_allow_html=True)
     
     quiz_q1 = st.radio(
         "1. What percentage of all titles in the Netflix catalog are Movies?",
@@ -1231,8 +1409,7 @@ elif navigation_selection == "📖 Data Storytelling Report":
 # -----------------------------------------------------------------------------
 st.markdown("""
 <div class="footer-text">
-    <b>The Netflix Effect: What Makes a Show Popular?</b> — Data Analytics & Storytelling Application<br>
+    <b style="color:#FFFFFF;">The Netflix Effect: What Makes a Show Popular?</b> — Data Analytics & Storytelling Application<br>
     Built with Python, Streamlit, Pandas, and Pillow • Inspired by Netflix Studio Brand Guidelines • 2026
 </div>
 """, unsafe_allow_html=True)
-
