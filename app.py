@@ -4,6 +4,16 @@ import numpy as np
 from PIL import Image
 import os
 import io
+import html
+
+# Asset path resolution helper for portable execution
+def resolve_asset_path(filename):
+    if os.path.exists(filename):
+        return filename
+    fallback = os.path.join(os.path.dirname(__file__), filename)
+    if os.path.exists(fallback):
+        return fallback
+    return filename
 
 # -----------------------------------------------------------------------------
 # 1. STREAMLIT PAGE CONFIGURATION & NETFLIX THEME STYLING
@@ -544,6 +554,13 @@ VIZ_REGISTRY = {
 all_ratings = sorted(df["rating_filled"].unique())
 default_ratings = [r for r in ["TV-MA", "TV-14", "TV-PG", "R", "PG-13", "TV-Y7", "TV-Y"] if r in all_ratings]
 
+# BLACK-BOX FIX 1: Callback function for Reset Filters button to prevent StreamlitWidgetAlreadyInstantiatedError
+def reset_all_filters():
+    st.session_state["sb_content_type"] = "All"
+    st.session_state["slider_year_range"] = (1925, 2021)
+    st.session_state["ms_ratings"] = default_ratings
+    st.session_state["ti_search"] = ""
+
 if "quiz_answers" not in st.session_state:
     st.session_state.quiz_answers = {}
 if "spotlight_universal_select" not in st.session_state:
@@ -607,13 +624,13 @@ with st.sidebar:
             key="ti_search"
         )
         
-        # Reset filters button
-        if st.button("🔄 Reset All Filters", use_container_width=True):
-            st.session_state["sb_content_type"] = "All"
-            st.session_state["slider_year_range"] = (1925, 2021)
-            st.session_state["ms_ratings"] = default_ratings
-            st.session_state["ti_search"] = ""
-            st.rerun()
+        # Reset filters button using on_click callback
+        st.button(
+            "🔄 Reset All Filters",
+            on_click=reset_all_filters,
+            use_container_width=True,
+            help="Reset all catalog filters to their default values"
+        )
 
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     st.markdown("""
@@ -622,13 +639,13 @@ with st.sidebar:
         • Total Records: 8,807 Titles<br>
         • High-Res Visuals: 10 PNG Charts<br>
         • Brand Engine: Netflix Black & Crimson<br>
-        • QA Tested: White Box & UI Certified
+        • QA Tested: Black Box & White Box Certified
     </div>
     """, unsafe_allow_html=True)
 
 
 # -----------------------------------------------------------------------------
-# WHITE-BOX HARDENED FILTERING PIPELINE (REGEX CRASH PROOF)
+# HARDENED FILTERING PIPELINE (BLACK-BOX & WHITE-BOX TESTED)
 # -----------------------------------------------------------------------------
 filtered_df = df.copy()
 
@@ -642,8 +659,8 @@ filtered_df = filtered_df[
     (filtered_df["release_year"] <= year_range[1])
 ]
 
-if filter_ratings:
-    filtered_df = filtered_df[filtered_df["rating_filled"].isin(filter_ratings)]
+# BLACK-BOX FIX 2: Strict rating filtering so deselecting all ratings yields 0 titles and triggers guidance
+filtered_df = filtered_df[filtered_df["rating_filled"].isin(filter_ratings)]
 
 # WHITE-BOX FIX 2: Added regex=False to prevent crashes on brackets, asterisks, plus symbols
 if search_query:
@@ -771,8 +788,8 @@ if navigation_selection == "🏠 Overview & Metrics":
             """, unsafe_allow_html=True)
             
     elif content_type == "Movie":
-        median_movie_min = int(filtered_df["duration_num"].median()) if not filtered_df["duration_num"].dropna().empty else 98
-        avg_movie_min = filtered_df["duration_num"].mean() if not filtered_df["duration_num"].dropna().empty else 99.6
+        median_movie_min = int(filtered_df["duration_num"].median()) if not filtered_df["duration_num"].dropna().empty else 0
+        avg_movie_min = filtered_df["duration_num"].mean() if not filtered_df["duration_num"].dropna().empty else 0.0
         
         with col1:
             st.markdown(f"""
@@ -786,15 +803,15 @@ if navigation_selection == "🏠 Overview & Metrics":
             st.markdown(f"""
             <div class="metric-card">
                 <div class="metric-label">Median Runtime</div>
-                <div class="metric-value">{median_movie_min} <span>min</span></div>
-                <div class="metric-sub">Mean: {avg_movie_min:.1f} Mins</div>
+                <div class="metric-value">{f"{median_movie_min} <span>min</span>" if total_active > 0 else "N/A"}</div>
+                <div class="metric-sub">{f"Mean: {avg_movie_min:.1f} Mins" if total_active > 0 else "No active movies"}</div>
             </div>
             """, unsafe_allow_html=True)
         with col3:
             st.markdown(f"""
             <div class="metric-card">
                 <div class="metric-label">Format Share</div>
-                <div class="metric-value">100<span>%</span></div>
+                <div class="metric-value">{f"100<span>%</span>" if total_active > 0 else "0<span>%</span>"}</div>
                 <div class="metric-sub">Films Exclusive View</div>
             </div>
             """, unsafe_allow_html=True)
@@ -803,7 +820,7 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="metric-card">
                 <div class="metric-label">Top Movie Rating</div>
                 <div class="metric-value">{top_rating}</div>
-                <div class="metric-sub">{top_rating_count:,} Films ({top_rating_pct:.1f}%)</div>
+                <div class="metric-sub">{f"{top_rating_count:,} Films ({top_rating_pct:.1f}%)" if total_active > 0 else "No active movies"}</div>
             </div>
             """, unsafe_allow_html=True)
         with col5:
@@ -811,13 +828,13 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="metric-card">
                 <div class="metric-label">Peak Addition Year</div>
                 <div class="metric-value">{peak_year}</div>
-                <div class="metric-sub">{peak_year_count:,} Films Ingested</div>
+                <div class="metric-sub">{f"{peak_year_count:,} Films Ingested" if total_active > 0 else "No active movies"}</div>
             </div>
             """, unsafe_allow_html=True)
             
     else:  # TV Show
-        single_season_count = (filtered_df["duration_num"] == 1).sum() if not filtered_df.empty else 1793
-        single_season_pct = (single_season_count / total_active * 100) if total_active > 0 else 67.0
+        single_season_count = (filtered_df["duration_num"] == 1).sum() if not filtered_df.empty else 0
+        single_season_pct = (single_season_count / total_active * 100) if total_active > 0 else 0.0
         
         with col1:
             st.markdown(f"""
@@ -831,15 +848,15 @@ if navigation_selection == "🏠 Overview & Metrics":
             st.markdown(f"""
             <div class="metric-card">
                 <div class="metric-label">1-Season Skew</div>
-                <div class="metric-value">{single_season_pct:.1f}<span>%</span></div>
-                <div class="metric-sub">{single_season_count:,} Single-Season Shows</div>
+                <div class="metric-value">{f"{single_season_pct:.1f}<span>%</span>" if total_active > 0 else "N/A"}</div>
+                <div class="metric-sub">{f"{single_season_count:,} Single-Season Shows" if total_active > 0 else "No active series"}</div>
             </div>
             """, unsafe_allow_html=True)
         with col3:
             st.markdown(f"""
             <div class="metric-card">
                 <div class="metric-label">Format Share</div>
-                <div class="metric-value">100<span>%</span></div>
+                <div class="metric-value">{f"100<span>%</span>" if total_active > 0 else "0<span>%</span>"}</div>
                 <div class="metric-sub">TV Series Exclusive View</div>
             </div>
             """, unsafe_allow_html=True)
@@ -848,7 +865,7 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="metric-card">
                 <div class="metric-label">Top TV Rating</div>
                 <div class="metric-value">{top_rating}</div>
-                <div class="metric-sub">{top_rating_count:,} Shows ({top_rating_pct:.1f}%)</div>
+                <div class="metric-sub">{f"{top_rating_count:,} Shows ({top_rating_pct:.1f}%)" if total_active > 0 else "No active series"}</div>
             </div>
             """, unsafe_allow_html=True)
         with col5:
@@ -856,7 +873,7 @@ if navigation_selection == "🏠 Overview & Metrics":
             <div class="metric-card">
                 <div class="metric-label">Peak Addition Year</div>
                 <div class="metric-value">{peak_year}</div>
-                <div class="metric-sub">{peak_year_count:,} Shows Ingested</div>
+                <div class="metric-sub">{f"{peak_year_count:,} Shows Ingested" if total_active > 0 else "No active series"}</div>
             </div>
             """, unsafe_allow_html=True)
     
@@ -924,12 +941,14 @@ if navigation_selection == "🏠 Overview & Metrics":
     
     fcol1, fcol2 = st.columns(2)
     with fcol1:
-        if os.path.exists("viz1_type_distribution.png"):
-            img1 = Image.open("viz1_type_distribution.png")
+        v1_path = resolve_asset_path("viz1_type_distribution.png")
+        if os.path.exists(v1_path):
+            img1 = Image.open(v1_path)
             st.image(img1, caption="Figure 1: Format Distribution — Movies (69.6%) vs TV Shows (30.4%)", use_container_width=True)
     with fcol2:
-        if os.path.exists("viz2_growth_trend.png"):
-            img2 = Image.open("viz2_growth_trend.png")
+        v2_path = resolve_asset_path("viz2_growth_trend.png")
+        if os.path.exists(v2_path):
+            img2 = Image.open(v2_path)
             st.image(img2, caption="Figure 2: Annual Growth Velocity — The Post-2016 Inflection Surge", use_container_width=True)
 
     # Interactive Catalog Explorer Section
@@ -985,27 +1004,36 @@ if navigation_selection == "🏠 Overview & Metrics":
         )
         
         selected_row = df[df["title"] == selected_title].iloc[0]
+        esc_title = html.escape(str(selected_row['title']))
+        esc_type = html.escape(str(selected_row['type']))
+        esc_rating = html.escape(str(selected_row['rating_filled']))
+        esc_duration = html.escape(str(selected_row['duration']))
+        esc_country = html.escape(str(selected_row['country_filled']))
+        esc_director = html.escape(str(selected_row['director_filled']))
+        esc_desc = html.escape(str(selected_row['description_filled']))
+        esc_cast = html.escape(str(selected_row['cast_filled']))
+        esc_genres = html.escape(str(selected_row['listed_in']))
         
         st.markdown(f"""
         <div class="spotlight-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:1.4rem; font-weight:800; color:#FFFFFF;">{selected_row['title']}</span>
+                <span style="font-size:1.4rem; font-weight:800; color:#FFFFFF;">{esc_title}</span>
                 <div>
-                    <span class="badge-netflix">{selected_row['type']}</span>
-                    <span class="badge-secondary">{selected_row['rating_filled']}</span>
-                    <span class="badge-secondary">{selected_row['duration']}</span>
+                    <span class="badge-netflix">{esc_type}</span>
+                    <span class="badge-secondary">{esc_rating}</span>
+                    <span class="badge-secondary">{esc_duration}</span>
                 </div>
             </div>
             <div style="color:#B3B3B3; font-size:0.85rem; margin-bottom:12px;">
-                <b>Released:</b> {selected_row['release_year']} | <b>Country:</b> {selected_row['country_filled']} | <b>Director:</b> {selected_row['director_filled']}
+                <b>Released:</b> {selected_row['release_year']} | <b>Country:</b> {esc_country} | <b>Director:</b> {esc_director}
             </div>
             <div style="background-color:#111111; padding:12px; border-radius:6px; border:1px solid #282828; margin-bottom:10px;">
                 <b style="color:#FFFFFF;">Plot Synopsis:</b>
-                <p style="color:#E2E2E2; margin-top:4px; font-size:0.92rem; line-height:1.6;">{selected_row['description_filled']}</p>
+                <p style="color:#E2E2E2; margin-top:4px; font-size:0.92rem; line-height:1.6;">{esc_desc}</p>
             </div>
             <div style="color:#A0A0A0; font-size:0.82rem;">
-                <b>Cast:</b> {selected_row['cast_filled']}<br>
-                <b>Genres:</b> {selected_row['listed_in']}
+                <b>Cast:</b> {esc_cast}<br>
+                <b>Genres:</b> {esc_genres}
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1065,12 +1093,13 @@ elif navigation_selection == "📊 Visualizations & EDA":
         """, unsafe_allow_html=True)
         
         # Display Image with crisp wide container scaling
-        if os.path.exists(v_info["file"]):
-            img = Image.open(v_info["file"])
+        img_path = resolve_asset_path(v_info["file"])
+        if os.path.exists(img_path):
+            img = Image.open(img_path)
             st.image(img, use_container_width=True)
             
             # Download button for this high-res visualization
-            with open(v_info["file"], "rb") as f_img:
+            with open(img_path, "rb") as f_img:
                 st.download_button(
                     label=f"📥 Download Chart Image (High-Res PNG)",
                     data=f_img.read(),
@@ -1124,11 +1153,12 @@ elif navigation_selection == "📊 Visualizations & EDA":
                 </div>
             """, unsafe_allow_html=True)
             
-            if os.path.exists(v["file"]):
-                img = Image.open(v["file"])
+            img_path = resolve_asset_path(v["file"])
+            if os.path.exists(img_path):
+                img = Image.open(img_path)
                 st.image(img, use_container_width=True)
                 
-                with open(v["file"], "rb") as f_img:
+                with open(img_path, "rb") as f_img:
                     st.download_button(
                         label=f"📥 Download {v['short_title']} (PNG)",
                         data=f_img.read(),
@@ -1190,8 +1220,9 @@ elif navigation_selection == "💡 Analytical Insights":
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            if os.path.exists("viz1_type_distribution.png"):
-                st.image(Image.open("viz1_type_distribution.png"), use_container_width=True)
+            v1_p = resolve_asset_path("viz1_type_distribution.png")
+            if os.path.exists(v1_p):
+                st.image(Image.open(v1_p), use_container_width=True)
             st.markdown("""
             <div class="quote-box">
                 "Movies acquire subscribers; TV series keep them subscribed."
@@ -1216,8 +1247,9 @@ elif navigation_selection == "💡 Analytical Insights":
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            if os.path.exists("viz2_growth_trend.png"):
-                st.image(Image.open("viz2_growth_trend.png"), use_container_width=True)
+            v2_p = resolve_asset_path("viz2_growth_trend.png")
+            if os.path.exists(v2_p):
+                st.image(Image.open(v2_p), use_container_width=True)
                 
     # TAB 3: Genre Preferences
     with tabs[2]:
@@ -1237,8 +1269,9 @@ elif navigation_selection == "💡 Analytical Insights":
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            if os.path.exists("viz3_top_genres.png"):
-                st.image(Image.open("viz3_top_genres.png"), use_container_width=True)
+            v3_p = resolve_asset_path("viz3_top_genres.png")
+            if os.path.exists(v3_p):
+                st.image(Image.open(v3_p), use_container_width=True)
 
     # TAB 4: Maturity Ratings
     with tabs[3]:
@@ -1258,8 +1291,9 @@ elif navigation_selection == "💡 Analytical Insights":
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            if os.path.exists("viz4_ratings_distribution.png"):
-                st.image(Image.open("viz4_ratings_distribution.png"), use_container_width=True)
+            v4_p = resolve_asset_path("viz4_ratings_distribution.png")
+            if os.path.exists(v4_p):
+                st.image(Image.open(v4_p), use_container_width=True)
 
     # TAB 5: Geographic Hubs
     with tabs[4]:
@@ -1279,8 +1313,9 @@ elif navigation_selection == "💡 Analytical Insights":
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            if os.path.exists("viz5_top_countries.png"):
-                st.image(Image.open("viz5_top_countries.png"), use_container_width=True)
+            v5_p = resolve_asset_path("viz5_top_countries.png")
+            if os.path.exists(v5_p):
+                st.image(Image.open(v5_p), use_container_width=True)
 
 
 # -----------------------------------------------------------------------------
@@ -1540,6 +1575,24 @@ elif navigation_selection == "📖 Data Storytelling Report":
             st.success("✅ Exactly! Netflix evaluates cost-versus-completion within the first 28 days to decide renewal viability.")
         else:
             st.error(f"❌ Not quite. Netflix uses strict 28-day algorithmic completion metrics to decide renewals.")
+            
+    # Composite Score Banner when both questions are answered
+    if "q1" in st.session_state.quiz_answers and "q2" in st.session_state.quiz_answers:
+        q1_ok = (st.session_state.quiz_answers["q1"] == "~69.6%")
+        q2_ok = ("Algorithmic cancellation thresholds" in st.session_state.quiz_answers["q2"])
+        total_score = (1 if q1_ok else 0) + (1 if q2_ok else 0)
+        score_pct = int(total_score / 2 * 100)
+        
+        st.markdown(f"""
+        <div style="background-color:#1c1315; border:1px solid #E50914; border-radius:8px; padding:16px; margin:20px 0; text-align:center;">
+            <div style="font-size:1.3rem; font-weight:800; color:#FFFFFF;">
+                🎯 Your Quiz Score: <span style="color:#E50914;">{total_score} / 2</span> ({score_pct}%)
+            </div>
+            <p style="color:#E0E0E0; font-size:0.92rem; margin-top:6px; margin-bottom:0;">
+                {'🌟 Outstanding! You have mastered the core data insights of Netflix content dynamics.' if total_score == 2 else '💡 Great effort! Review the analytical insights above to master the catalog metrics.'}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
             
     if st.session_state.quiz_answers:
         if st.button("🔄 Reset Quiz Answers"):
