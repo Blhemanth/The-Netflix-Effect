@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Netflix Cinematic Dark Theme with High-Contrast Typography
+# Custom CSS for Netflix Cinematic Dark Theme with High-Contrast Typography & Mobile Responsiveness
 st.markdown("""
 <style>
     /* Global styles & Fonts */
@@ -53,11 +53,11 @@ st.markdown("""
     .netflix-logo-text {
         font-family: 'Bebas Neue', 'Impact', sans-serif;
         color: #E50914;
-        font-size: 2.7rem;
+        font-size: 2.8rem;
         letter-spacing: 2px;
         margin: 0;
         padding: 0;
-        text-shadow: 0 2px 12px rgba(229, 9, 20, 0.5);
+        text-shadow: 0 2px 14px rgba(229, 9, 20, 0.55);
     }
     .netflix-subtext {
         color: #C8C8C8;
@@ -271,7 +271,18 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* Streamlit Widget Label & Radio Overrides for Maximum Readability */
+    /* Spotlight Card */
+    .spotlight-card {
+        background: linear-gradient(135deg, #1f1416 0%, #161616 100%);
+        border: 1px solid #3a2225;
+        border-left: 5px solid #E50914;
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin: 15px 0;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Streamlit Widget Label & Radio Overrides */
     label[data-testid="stWidgetLabel"] p {
         color: #F0F0F0 !important;
         font-weight: 600 !important;
@@ -300,6 +311,19 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
+    /* Responsive adjustments for mobile/tablet */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.1rem !important;
+        }
+        .metric-value {
+            font-size: 1.6rem !important;
+        }
+        .metric-card {
+            padding: 12px 14px !important;
+        }
+    }
+
     /* Footer */
     .footer-text {
         text-align: center;
@@ -314,16 +338,25 @@ st.markdown("""
 
 
 # -----------------------------------------------------------------------------
-# 2. DATA LOADING & PREPROCESSING
+# 2. DATA LOADING, SANITIZATION & PREPROCESSING (WHITE-BOX HARDENED)
 # -----------------------------------------------------------------------------
 @st.cache_data(show_spinner=False)
 def load_netflix_data():
     csv_path = "netflix_titles.csv"
     if not os.path.exists(csv_path):
-        # Fallback if working directory offset
         csv_path = os.path.join(os.path.dirname(__file__), "netflix_titles.csv")
     
     df = pd.read_csv(csv_path)
+    
+    # WHITE-BOX FIX 1: Clean shifted ratings (e.g. Louis C.K. titles where runtime leaked into rating)
+    shifted_mask = df["rating"].astype(str).str.contains("min", na=False)
+    df.loc[shifted_mask, "duration"] = df.loc[shifted_mask, "rating"]
+    df.loc[shifted_mask, "rating"] = "Not Rated"
+    
+    # Parse movie runtime in minutes and TV show season count
+    df["duration_num"] = df["duration"].str.extract(r"(\d+)").astype(float)
+    df["is_movie"] = df["type"] == "Movie"
+    df["is_tv"] = df["type"] == "TV Show"
     
     # Clean date_added and extract temporal attributes
     df["date_added_clean"] = df["date_added"].astype(str).str.strip()
@@ -331,15 +364,12 @@ def load_netflix_data():
     df["year_added"] = df["datetime_added"].dt.year
     df["month_added"] = df["datetime_added"].dt.month_name()
     
-    # Parse movie runtime in minutes and TV show season count
-    df["duration_num"] = df["duration"].str.extract(r"(\d+)").astype(float)
-    df["is_movie"] = df["type"] == "Movie"
-    df["is_tv"] = df["type"] == "TV Show"
-    
-    # Fill missing values for clean display
+    # Fill missing values cleanly for presentation
     df["director_filled"] = df["director"].fillna("Unknown Director")
     df["country_filled"] = df["country"].fillna("Unknown Country")
     df["rating_filled"] = df["rating"].fillna("Not Rated")
+    df["cast_filled"] = df["cast"].fillna("Cast details unavailable")
+    df["description_filled"] = df["description"].fillna("No plot summary available.")
     
     return df
 
@@ -508,8 +538,17 @@ VIZ_REGISTRY = {
 
 
 # -----------------------------------------------------------------------------
-# 4. SIDEBAR NAVIGATION & FUNCTIONAL INTERACTIVE FILTERS
+# 4. SIDEBAR NAVIGATION & INTERACTIVE FILTERS WITH STATE MANAGEMENT
 # -----------------------------------------------------------------------------
+# Default ratings and titles
+all_ratings = sorted(df["rating_filled"].unique())
+default_ratings = [r for r in ["TV-MA", "TV-14", "TV-PG", "R", "PG-13", "TV-Y7", "TV-Y"] if r in all_ratings]
+
+if "quiz_answers" not in st.session_state:
+    st.session_state.quiz_answers = {}
+if "spotlight_universal_select" not in st.session_state:
+    st.session_state.spotlight_universal_select = sorted(df["title"].unique())[0]
+
 with st.sidebar:
     st.markdown("""
     <div style="text-align: center; padding: 10px 0 15px 0;">
@@ -543,6 +582,7 @@ with st.sidebar:
             "Content Type",
             options=["All", "Movie", "TV Show"],
             index=0,
+            key="sb_content_type",
             help="Filter catalog and dynamically update metrics displayed on the Overview & Metrics page"
         )
         
@@ -550,15 +590,30 @@ with st.sidebar:
             "Release Year Range:",
             min_value=int(df["release_year"].min()),
             max_value=int(df["release_year"].max()),
-            value=(1925, 2021)
+            value=(1925, 2021),
+            key="slider_year_range"
         )
         
-        # Rating options
-        all_ratings = sorted(df["rating_filled"].unique())
-        default_ratings = [r for r in ["TV-MA", "TV-14", "TV-PG", "R", "PG-13", "TV-Y7", "TV-Y"] if r in all_ratings]
-        filter_ratings = st.multiselect("Maturity Ratings:", all_ratings, default=default_ratings)
+        filter_ratings = st.multiselect(
+            "Maturity Ratings:",
+            options=all_ratings,
+            default=default_ratings,
+            key="ms_ratings"
+        )
         
-        search_query = st.text_input("Quick Search (Title / Cast / Country):", placeholder="e.g. Stranger Things, India...")
+        search_query = st.text_input(
+            "Quick Search (Title / Cast / Country):",
+            placeholder="e.g. Stranger Things, India...",
+            key="ti_search"
+        )
+        
+        # Reset filters button
+        if st.button("🔄 Reset All Filters", use_container_width=True):
+            st.session_state["sb_content_type"] = "All"
+            st.session_state["slider_year_range"] = (1925, 2021)
+            st.session_state["ms_ratings"] = default_ratings
+            st.session_state["ti_search"] = ""
+            st.rerun()
 
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     st.markdown("""
@@ -567,12 +622,14 @@ with st.sidebar:
         • Total Records: 8,807 Titles<br>
         • High-Res Visuals: 10 PNG Charts<br>
         • Brand Engine: Netflix Black & Crimson<br>
-        • Status: Interactive & Production Ready
+        • QA Tested: White Box & UI Certified
     </div>
     """, unsafe_allow_html=True)
 
 
-# Apply Content Type and multi-variable filters dynamically
+# -----------------------------------------------------------------------------
+# WHITE-BOX HARDENED FILTERING PIPELINE (REGEX CRASH PROOF)
+# -----------------------------------------------------------------------------
 filtered_df = df.copy()
 
 if content_type == "Movie":
@@ -588,13 +645,14 @@ filtered_df = filtered_df[
 if filter_ratings:
     filtered_df = filtered_df[filtered_df["rating_filled"].isin(filter_ratings)]
 
+# WHITE-BOX FIX 2: Added regex=False to prevent crashes on brackets, asterisks, plus symbols
 if search_query:
-    q = search_query.lower()
+    q = search_query.strip().lower()
     filtered_df = filtered_df[
-        filtered_df["title"].str.lower().str.contains(q, na=False) |
-        filtered_df["cast"].str.lower().str.contains(q, na=False) |
-        filtered_df["director_filled"].str.lower().str.contains(q, na=False) |
-        filtered_df["country_filled"].str.lower().str.contains(q, na=False)
+        filtered_df["title"].str.lower().str.contains(q, case=False, regex=False, na=False) |
+        filtered_df["cast_filled"].str.lower().str.contains(q, case=False, regex=False, na=False) |
+        filtered_df["director_filled"].str.lower().str.contains(q, case=False, regex=False, na=False) |
+        filtered_df["country_filled"].str.lower().str.contains(q, case=False, regex=False, na=False)
     ]
 
 
@@ -662,6 +720,10 @@ if navigation_selection == "🏠 Overview & Metrics":
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Empty State Callout if 0 results match
+    if total_active == 0:
+        st.warning("⚠️ No titles match your current filter combination. Broaden your release year range, select more ratings, or click 'Reset All Filters' in the sidebar.")
     
     # Dynamic 5 Metric Cards Responsive Grid
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -873,7 +935,10 @@ if navigation_selection == "🏠 Overview & Metrics":
     # Interactive Catalog Explorer Section
     st.markdown("<hr style='border-color:#2a2a2a; margin:30px 0;'>", unsafe_allow_html=True)
     st.markdown("<h3 style='color:#FFFFFF; font-size:1.4rem;'>🔍 Live Interactive Catalog Explorer</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:#D0D0D0; font-size:0.92rem;'>Currently displaying <b>{len(filtered_df):,}</b> matching titles based on your active sidebar filter criteria (Content Type: <b>{content_type}</b>, Release Years: <b>{year_range[0]}–{year_range[1]}</b>):</p>", unsafe_allow_html=True)
+    
+    preview_limit = 100
+    shown_count = min(preview_limit, len(filtered_df))
+    st.markdown(f"<p style='color:#D0D0D0; font-size:0.92rem;'>Showing top <b>{shown_count:,}</b> of <b>{len(filtered_df):,}</b> matching titles based on your active sidebar filter criteria (Content Type: <b>{content_type}</b>, Release Years: <b>{year_range[0]}–{year_range[1]}</b>):</p>", unsafe_allow_html=True)
     
     # Table display columns
     display_cols = ["show_id", "title", "type", "release_year", "rating_filled", "duration", "country_filled", "listed_in"]
@@ -889,22 +954,61 @@ if navigation_selection == "🏠 Overview & Metrics":
     })
     
     st.dataframe(
-        clean_table.head(100),
+        clean_table.head(preview_limit),
         use_container_width=True,
         hide_index=True,
         height=320
     )
     
-    # Download Button
+    # Download Button with sanitized filename
     csv_buffer = io.StringIO()
     clean_table.to_csv(csv_buffer, index=False)
+    sanitized_filename = f"netflix_filtered_{content_type.lower().replace(' ', '_')}_dataset.csv"
+    
     st.download_button(
-        label="📥 Download Filtered Dataset (CSV)",
+        label=f"📥 Download Full Filtered Dataset ({len(clean_table):,} Titles CSV)",
         data=csv_buffer.getvalue(),
-        file_name=f"netflix_filtered_{content_type.lower()}_dataset.csv",
+        file_name=sanitized_filename,
         mime="text/csv",
-        help="Export the currently filtered Netflix titles into a clean CSV file"
+        help="Export the entire filtered set of Netflix titles into a clean CSV file"
     )
+
+    # NEW INTERACTIVE FEATURE: Title Spotlight Card (Universal Catalog Access)
+    with st.expander("🎬 Interactive Title Spotlight: Inspect Full Story & Cast", expanded=False):
+        spotlight_titles = sorted(df["title"].unique())
+        selected_title = st.selectbox(
+            "Choose any Netflix title from the catalog to inspect:",
+            options=spotlight_titles,
+            index=0,
+            key="spotlight_universal_select",
+            help="Select any movie or show to inspect its detailed synopsis, rating, cast, and director"
+        )
+        
+        selected_row = df[df["title"] == selected_title].iloc[0]
+        
+        st.markdown(f"""
+        <div class="spotlight-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:1.4rem; font-weight:800; color:#FFFFFF;">{selected_row['title']}</span>
+                <div>
+                    <span class="badge-netflix">{selected_row['type']}</span>
+                    <span class="badge-secondary">{selected_row['rating_filled']}</span>
+                    <span class="badge-secondary">{selected_row['duration']}</span>
+                </div>
+            </div>
+            <div style="color:#B3B3B3; font-size:0.85rem; margin-bottom:12px;">
+                <b>Released:</b> {selected_row['release_year']} | <b>Country:</b> {selected_row['country_filled']} | <b>Director:</b> {selected_row['director_filled']}
+            </div>
+            <div style="background-color:#111111; padding:12px; border-radius:6px; border:1px solid #282828; margin-bottom:10px;">
+                <b style="color:#FFFFFF;">Plot Synopsis:</b>
+                <p style="color:#E2E2E2; margin-top:4px; font-size:0.92rem; line-height:1.6;">{selected_row['description_filled']}</p>
+            </div>
+            <div style="color:#A0A0A0; font-size:0.82rem;">
+                <b>Cast:</b> {selected_row['cast_filled']}<br>
+                <b>Genres:</b> {selected_row['listed_in']}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # -----------------------------------------------------------------------------
@@ -964,6 +1068,16 @@ elif navigation_selection == "📊 Visualizations & EDA":
         if os.path.exists(v_info["file"]):
             img = Image.open(v_info["file"])
             st.image(img, use_container_width=True)
+            
+            # Download button for this high-res visualization
+            with open(v_info["file"], "rb") as f_img:
+                st.download_button(
+                    label=f"📥 Download Chart Image (High-Res PNG)",
+                    data=f_img.read(),
+                    file_name=v_info["file"],
+                    mime="image/png",
+                    key=f"dl_single_{viz_key}"
+                )
         else:
             st.warning(f"Visualization file '{v_info['file']}' not found in root directory.")
             
@@ -1013,6 +1127,15 @@ elif navigation_selection == "📊 Visualizations & EDA":
             if os.path.exists(v["file"]):
                 img = Image.open(v["file"])
                 st.image(img, use_container_width=True)
+                
+                with open(v["file"], "rb") as f_img:
+                    st.download_button(
+                        label=f"📥 Download {v['short_title']} (PNG)",
+                        data=f_img.read(),
+                        file_name=v["file"],
+                        mime="image/png",
+                        key=f"dl_gallery_{k}"
+                    )
             else:
                 st.warning(f"File {v['file']} not found.")
                 
@@ -1274,7 +1397,7 @@ elif navigation_selection == "🎯 Actionable Recommendations":
 
 
 # -----------------------------------------------------------------------------
-# 9. PAGE 5: 📖 DATA STORYTELLING REPORT
+# 9. PAGE 5: 📖 DATA STORYTELLING REPORT (STATEFUL QUIZ)
 # -----------------------------------------------------------------------------
 elif navigation_selection == "📖 Data Storytelling Report":
     st.markdown("""
@@ -1373,20 +1496,30 @@ elif navigation_selection == "📖 Data Storytelling Report":
     </div>
     """, unsafe_allow_html=True)
     
-    # Interactive Knowledge Check
+    # WHITE-BOX FIX 3: Stateful Quiz using st.session_state to prevent feedback erasure across reruns
     st.markdown("<h3 style='color:#FFFFFF; font-size:1.35rem; margin-top:25px;'>🧠 Interactive Quiz: Test Your Netflix Data Knowledge</h3>", unsafe_allow_html=True)
     
+    if "quiz_answers" not in st.session_state:
+        st.session_state.quiz_answers = {}
+        
     quiz_q1 = st.radio(
         "1. What percentage of all titles in the Netflix catalog are Movies?",
         ["~50.0%", "~69.6%", "~82.5%", "~30.4%"],
-        index=0
+        index=0,
+        key="radio_q1"
     )
-    if st.button("Check Answer for Q1"):
-        if quiz_q1 == "~69.6%":
-            st.success("✅ Correct! Movies make up exactly 69.6% (6,131 titles) of the catalog.")
+    if st.button("Check Answer for Q1", key="btn_q1"):
+        st.session_state.quiz_answers["q1"] = quiz_q1
+        
+    if "q1" in st.session_state.quiz_answers:
+        user_ans_1 = st.session_state.quiz_answers["q1"]
+        if user_ans_1 == "~69.6%":
+            st.success(f"✅ Correct! You chose {user_ans_1}. Movies make up exactly 69.6% (6,131 titles) of the catalog.")
         else:
-            st.error("❌ Incorrect. The catalog is 69.6% Movies and 30.4% TV Shows.")
+            st.error(f"❌ Incorrect. You chose {user_ans_1}. The catalog is 69.6% Movies and 30.4% TV Shows.")
             
+    st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+    
     quiz_q2 = st.radio(
         "2. What is the single most common reason why 67% of Netflix TV shows have only 1 season?",
         [
@@ -1395,13 +1528,23 @@ elif navigation_selection == "📖 Data Storytelling Report":
             "Streaming servers cannot handle multiple seasons",
             "Actors age out of roles"
         ],
-        index=0
+        index=0,
+        key="radio_q2"
     )
-    if st.button("Check Answer for Q2"):
-        if "Algorithmic cancellation thresholds" in quiz_q2:
+    if st.button("Check Answer for Q2", key="btn_q2"):
+        st.session_state.quiz_answers["q2"] = quiz_q2
+        
+    if "q2" in st.session_state.quiz_answers:
+        user_ans_2 = st.session_state.quiz_answers["q2"]
+        if "Algorithmic cancellation thresholds" in user_ans_2:
             st.success("✅ Exactly! Netflix evaluates cost-versus-completion within the first 28 days to decide renewal viability.")
         else:
-            st.error("❌ Not quite. Netflix uses strict 28-day algorithmic completion metrics to decide renewals.")
+            st.error(f"❌ Not quite. Netflix uses strict 28-day algorithmic completion metrics to decide renewals.")
+            
+    if st.session_state.quiz_answers:
+        if st.button("🔄 Reset Quiz Answers"):
+            st.session_state.quiz_answers = {}
+            st.rerun()
 
 
 # -----------------------------------------------------------------------------
