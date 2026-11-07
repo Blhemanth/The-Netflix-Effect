@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary and local files
+temp_check.csv
+__results___files/
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Streamlit local state
+.streamlit/secrets.toml
