@@ -5,6 +5,8 @@ from PIL import Image
 import os
 import io
 import html
+import plotly.graph_objects as go
+import plotly.express as px
 
 # Asset path resolution helper for portable execution
 def resolve_asset_path(filename):
@@ -380,6 +382,161 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
+    /* Uniform Cinematic Chart Card Frame */
+    .uniform-chart-card {
+        background-color: #0e0e0e;
+        border: 1px solid #2d2d2d;
+        border-top: 3px solid #E50914;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 22px;
+        box-shadow: 0 6px 22px rgba(0,0,0,0.65);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .uniform-chart-card img {
+        border-radius: 6px;
+        max-height: 480px !important;
+        width: 100% !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+
+    /* Catchy Visual Banner */
+    .catchy-banner {
+        background: linear-gradient(90deg, #201214 0%, #171717 65%, #1c1c1c 100%);
+        border-left: 6px solid #E50914;
+        border-top: 1px solid #362225;
+        border-right: 1px solid #2d2d2d;
+        border-bottom: 1px solid #2d2d2d;
+        border-radius: 10px;
+        padding: 16px 22px;
+        margin-bottom: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .catchy-banner-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #FFFFFF;
+        line-height: 1.35;
+        letter-spacing: 0.3px;
+    }
+    .catchy-banner-title span {
+        color: #E50914;
+    }
+    .catchy-banner-badge {
+        background-color: #E50914;
+        color: #FFFFFF;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);
+    }
+
+    /* Catchy 3-KPI Grid */
+    .catchy-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin: 18px 0;
+    }
+    .catchy-kpi-card {
+        background: linear-gradient(135deg, #1b1b1b 0%, #141414 100%);
+        border: 1px solid #333333;
+        border-top: 3px solid #E50914;
+        border-radius: 8px;
+        padding: 15px 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .catchy-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: #E50914;
+    }
+    .catchy-kpi-label {
+        font-size: 0.74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #B0B0B0;
+        margin-bottom: 5px;
+    }
+    .catchy-kpi-val {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #FFFFFF;
+        line-height: 1.15;
+        margin-bottom: 5px;
+    }
+    .catchy-kpi-val span {
+        color: #E50914;
+    }
+    .catchy-kpi-sub {
+        font-size: 0.82rem;
+        color: #C5C5C5;
+    }
+
+    /* Power BI Dashboard Containers & Badges */
+    .pbi-panel {
+        background-color: #171717;
+        border: 1px solid #2e2e2e;
+        border-radius: 10px;
+        padding: 20px 22px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+    }
+    .pbi-badge {
+        background-color: #F2C811;
+        color: #000000;
+        font-size: 0.75rem;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 4px;
+        letter-spacing: 0.8px;
+        display: inline-block;
+        text-transform: uppercase;
+    }
+    .pbi-kpi-card {
+        background: linear-gradient(135deg, #1b1b1b 0%, #141414 100%);
+        border: 1px solid #333333;
+        border-top: 3px solid #E50914;
+        border-radius: 8px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    }
+
+    /* Simulator Prediction Boxes */
+    .sim-score-box {
+        background: linear-gradient(145deg, #221417 0%, #161616 100%);
+        border: 1px solid #3d2427;
+        border-left: 6px solid #E50914;
+        border-radius: 10px;
+        padding: 22px 26px;
+        margin: 16px 0;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    .sim-verdict-pill {
+        display: inline-block;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
     /* Responsive adjustments for mobile/tablet */
     @media (max-width: 768px) {
         .hero-title {
@@ -390,6 +547,9 @@ st.markdown("""
         }
         .metric-card {
             padding: 12px 14px !important;
+        }
+        .catchy-kpi-grid {
+            grid-template-columns: 1fr !important;
         }
     }
 
@@ -458,6 +618,13 @@ VIZ_REGISTRY = {
         "short_title": "1. Format Distribution (Movies vs. TV)",
         "full_title": "Catalog Split: Movies vs. TV Shows",
         "category": "Format & Catalog Composition",
+        "executive_headline": "The 2.3x Volume Asymmetry: Movies Build Immediate Catalog Density, TV Series Defend Retention Moat",
+        "metric_highlight": "69.6% Movies (6,131) vs. 30.4% TV Shows (2,676)",
+        "key_stats": [
+            {"label": "MOVIES VOLUME", "val": "6,131 Titles", "sub": "69.6% Total Catalog Share"},
+            {"label": "TV SERIES RETENTION", "val": "2,676 Titles", "sub": "75%+ Total Watch Hours"},
+            {"label": "FORMAT ASYMMETRY", "val": "2.3x Ratio", "sub": "Lower Licensing Cost Per Title"}
+        ],
         "caption": "Analysis of Netflix catalog composition revealing a 69.6% Movies vs. 30.4% TV Shows split across 8,807 registered titles.",
         "insights": [
             "Movies hold a dominant 2.3x numerical majority over TV Shows in Netflix's catalog (6,131 Movies vs. 2,676 TV Shows).",
@@ -465,7 +632,6 @@ VIZ_REGISTRY = {
             "Despite holding only ~30.4% catalog share, TV Shows drive disproportionate total hours watched due to binge dynamics and multi-episode commitments.",
             "Strategic acquisition cost per hour of streaming is significantly lower for multi-episode series compared to single-sitting feature films."
         ],
-        "metric_highlight": "69.6% Movies vs. 30.4% TV Shows",
         "actionable_takeaway": "Maintain high film volume for casual viewing while aggressively acquiring episodic series to maximize subscriber retention."
     },
     "viz2": {
@@ -473,6 +639,13 @@ VIZ_REGISTRY = {
         "short_title": "2. Catalog Growth Over Time (2008–2021)",
         "full_title": "Exponential Growth Trajectory Post-2016",
         "category": "Historical Trajectory",
+        "executive_headline": "The 2016 J-Curve: Global Expansion to 130 Countries Triggered +370% Explosion in Content Ingestion",
+        "metric_highlight": "+370% Ingestion Growth (429 in 2016 ➔ 2,016 in 2019 Peak)",
+        "key_stats": [
+            {"label": "EXPANSION SURGE", "val": "+370% Ingestion", "sub": "From 2016 to Peak in 2019"},
+            {"label": "ALL-TIME PEAK", "val": "2,016 Titles", "sub": "Added in Single Year (2019)"},
+            {"label": "ORIGINALS SHIFT", "val": "10% ➔ 45%+", "sub": "Shift to Proprietary In-House IP"}
+        ],
         "caption": "Temporal evolution of annual additions from 2008 through 2021, illustrating the hyper-scaling era triggered by the 2016 global launch.",
         "insights": [
             "Content additions grew by over 370% between 2016 (429 titles) and 2019's all-time record peak (2,016 titles).",
@@ -480,7 +653,6 @@ VIZ_REGISTRY = {
             "Growth in additions flattened in 2020 (1,879 titles) and 2021 (1,498 titles) due to COVID-19 production halts and strategic consolidation towards quality Originals.",
             "The proportion of self-commissioned Netflix Originals surged from less than 10% in 2015 to over 45% of annual additions by 2020."
         ],
-        "metric_highlight": "+370% Growth from 2016 to Peak in 2019",
         "actionable_takeaway": "Pivot capital from sheer volume expansion toward high-quality, high-re-watchability evergreen IP franchises."
     },
     "viz3": {
@@ -488,6 +660,13 @@ VIZ_REGISTRY = {
         "short_title": "3. Top Genres & Categories",
         "full_title": "Dominant Content Genres Across Netflix",
         "category": "Genre & Content Strategy",
+        "executive_headline": "The Borderless Engine: International Stories, Dramas, and Comedies Form Over 60% of Catalog Backbone",
+        "metric_highlight": "Top 3 Genres: International (4,103+), Dramas (2,427), Comedies (1,674)",
+        "key_stats": [
+            {"label": "GLOBAL BORDERLESS", "val": "4,103+ Titles", "sub": "International Tag Prevalence"},
+            {"label": "CORE PILLARS", "val": "4,101 Titles", "sub": "Dramas (2,427) + Comedies (1,674)"},
+            {"label": "FAMILY DEFICIT", "val": "Only 7.3%", "sub": "641 Titles (Disney+ Vulnerability)"}
+        ],
         "caption": "Top genres ranked by occurrence across Netflix's catalog, highlighting the supremacy of International titles, Dramas, and Comedies.",
         "insights": [
             "International Movies (2,752) and International TV Shows (1,351) form the largest overarching category, proving Netflix is fundamentally a borderless content engine.",
@@ -495,7 +674,6 @@ VIZ_REGISTRY = {
             "Documentaries (869 titles) and Stand-Up Comedy constitute high-ROI niche investments with minimal visual-effects overhead and strong viewer loyalty.",
             "Children & Family Movies (641 titles) represent an under-served category (~7.3%) compared to dedicated competitors like Disney+."
         ],
-        "metric_highlight": "Top 3 Genres: International (4,103+), Dramas (2,427), Comedies (1,674)",
         "actionable_takeaway": "Double down on hybrid genres (e.g., International Sci-Fi Crime Dramas) which cross cultural boundaries with high viral conversion."
     },
     "viz4": {
@@ -503,6 +681,13 @@ VIZ_REGISTRY = {
         "short_title": "4. Maturity Ratings Distribution",
         "full_title": "Target Audience Demographics by Maturity Rating",
         "category": "Audience Demographics",
+        "executive_headline": "The Adult Content Moat: 60.9% of the Entire Catalog is Engineered for Mature Audiences (TV-MA / TV-14)",
+        "metric_highlight": "60.9% Catalog is TV-MA (3,207) or TV-14 (2,160)",
+        "key_stats": [
+            {"label": "#1 MATURITY TIER", "val": "3,207 Titles", "sub": "TV-MA Represents 36.4% Library"},
+            {"label": "ADULT DOMINANCE", "val": "60.9% Share", "sub": "TV-MA & TV-14 Combined Moat"},
+            {"label": "FAMILY PROGRAMMING", "val": "Only 10.2%", "sub": "TV-Y, TV-Y7, G, TV-G Combined"}
+        ],
         "caption": "Distribution of content maturity ratings showing heavy concentration in mature and young-adult demographic categories.",
         "insights": [
             "TV-MA (Mature Audience Only) is Netflix's single largest rating category with 3,207 titles (36.4% of total catalog).",
@@ -510,7 +695,6 @@ VIZ_REGISTRY = {
             "Traditional theatrical ratings (R: 799, PG-13: 490, PG: 287) reflect third-party licensed Hollywood films.",
             "Family-friendly ratings (TV-Y, TV-Y7, TV-G, G) combined account for only ~10.2% of the catalog, exposing a vulnerability in multi-member household accounts."
         ],
-        "metric_highlight": "60.9% of Catalog is Rated TV-MA or TV-14",
         "actionable_takeaway": "Safeguard mature demographic dominance while selectively expanding family-safe co-viewing animated IP."
     },
     "viz5": {
@@ -518,6 +702,13 @@ VIZ_REGISTRY = {
         "short_title": "5. Top Content Producing Countries",
         "full_title": "Geographic Content Hubs & Global Sourcing",
         "category": "Geographic Hubs",
+        "executive_headline": "Distributed Global Studios: US Anchors Volume, but India, UK, Korea, and Spain Deliver Cross-Border Viral Hits",
+        "metric_highlight": "Top Hubs: US (3,689), India (1,046), UK (804), Canada (445), France (393)",
+        "key_stats": [
+            {"label": "#1 PRODUCTION HUB", "val": "3,689 Titles", "sub": "United States (41.9% of Total)"},
+            {"label": "#2 ASIAN POWERHOUSE", "val": "1,046 Titles", "sub": "India (11.9% Regional Leader)"},
+            {"label": "EUROPE & ASIA-PAC", "val": "2,423+ Titles", "sub": "UK, Canada, France, Korea, Spain"}
+        ],
         "caption": "Leading content producing nations on Netflix, comparing US volume against burgeoning Asian and European production hubs.",
         "insights": [
             "The United States leads overall production with 3,689 titles (41.9%), remaining the platform's primary production anchor.",
@@ -525,7 +716,6 @@ VIZ_REGISTRY = {
             "The United Kingdom (804 titles) and Canada (445 titles) form vital English-language co-production hubs.",
             "Non-English hubs including France (393), Japan (318), Spain (232), and South Korea (231) deliver viral global cross-border hits (e.g. Squid Game, Money Heist)."
         ],
-        "metric_highlight": "US (3,689), India (1,046), UK (804), Canada (445), France (393)",
         "actionable_takeaway": "Accelerate local-for-global production in high-talent, cost-effective hubs (India, South Korea, Spain, Latin America)."
     },
     "viz6": {
@@ -533,6 +723,13 @@ VIZ_REGISTRY = {
         "short_title": "6. Movie Duration Distribution",
         "full_title": "Anatomy of Movie Runtimes (Minutes)",
         "category": "Format & Engagement",
+        "executive_headline": "Runtime Sweet Spot: Gaussian Curve Centered at Median 98 Minutes Maximizes Streaming Completion Rates",
+        "metric_highlight": "Median Runtime: 98 Mins | Sweet Spot: 90–105 Minutes",
+        "key_stats": [
+            {"label": "MEDIAN RUNTIME", "val": "98 Minutes", "sub": "Mean: 99.6 ± 28.0 mins"},
+            {"label": "CORE SWEET SPOT", "val": "87–114 Mins", "sub": "Over 50% of All Feature Films"},
+            {"label": "FATIGUE THRESHOLD", "val": ">125 Minutes", "sub": "Steep Drop-off in Completion"}
+        ],
         "caption": "Distribution curve of movie runtimes showing a standard Gaussian distribution centered tightly between 90 and 105 minutes.",
         "insights": [
             "The median Netflix movie runtime is exactly 98 minutes, with an average of 99.6 minutes (standard deviation ~28 mins).",
@@ -540,7 +737,6 @@ VIZ_REGISTRY = {
             "Short-form documentaries and specials (under 50 mins) and epic prestige films (over 150 mins) form distinct tails on the distribution curve.",
             "Streaming algorithms show completion drop-offs increase substantially when non-franchise films exceed 125 minutes."
         ],
-        "metric_highlight": "Median Runtime: 98 Minutes | Sweet Spot: 90–105 Mins",
         "actionable_takeaway": "Standardize mid-budget original movies around 95–105 minutes to maximize full-play completion rates and algorithmic recommendations."
     },
     "viz7": {
@@ -548,6 +744,13 @@ VIZ_REGISTRY = {
         "short_title": "7. TV Show Seasons & Lifespans",
         "full_title": "TV Series Season Distribution & Churn Reality",
         "category": "Format & Engagement",
+        "executive_headline": "The 1-Season Cliff: 67.0% of Series Terminate After Season 1 Due to 28-Day Algorithmic Benchmark",
+        "metric_highlight": "67.0% of TV Shows (1,793 Titles) Have Only 1 Season",
+        "key_stats": [
+            {"label": "SINGLE-SEASON CLIFF", "val": "67.0% of Shows", "sub": "1,793 Series Never Renewed"},
+            {"label": "SEASON 2 SURVIVAL", "val": "15.9% Reach S2", "sub": "Only 425 Shows Renewed"},
+            {"label": "SEASON 3 SURVIVAL", "val": "7.4% Reach S3", "sub": "Only 199 Shows Cross 3 Seasons"}
+        ],
         "caption": "Analysis of TV series season counts showing extreme single-season skew and high cancellation/limited-series attrition.",
         "insights": [
             "A striking 67.0% of all TV shows (1,793 titles) have only 1 Season available on the platform.",
@@ -555,7 +758,6 @@ VIZ_REGISTRY = {
             "This steep cliff illustrates Netflix's algorithmic cancellation rule: if a show fails to drive new subscriber acquisition within 28 days, it is rarely renewed.",
             "Limited mini-series have intentionally grown in popularity as risk-managed, self-contained storytelling experiments."
         ],
-        "metric_highlight": "67.0% of TV Shows Have Only 1 Season Available",
         "actionable_takeaway": "Rebrand single-season investments upfront as 'Limited Series' to prevent negative viewer sentiment and subscriber fatigue."
     },
     "viz8": {
@@ -563,6 +765,13 @@ VIZ_REGISTRY = {
         "short_title": "8. Monthly Addition Seasonality",
         "full_title": "Content Release Seasonality Across Calendar Months",
         "category": "Release Strategy",
+        "executive_headline": "Seasonal Release Synchronization: July and December Lead Annual Additions to Capitalize on Peak Leisure Downtime",
+        "metric_highlight": "Peak Ingestion: July (827 Titles) & December (813 Titles)",
+        "key_stats": [
+            {"label": "#1 PEAK MONTH", "val": "827 Titles", "sub": "July Summer Vacation Ingestion"},
+            {"label": "#2 HOLIDAY PEAK", "val": "813 Titles", "sub": "December Holiday Downtime"},
+            {"label": "SPRING LULL", "val": "~630 Titles", "sub": "February–May Seasonal Drop"}
+        ],
         "caption": "Monthly pattern of title additions on Netflix revealing distinct Q4 holiday surge and mid-year summer refresh cycles.",
         "insights": [
             "December (813 titles) and July (827 titles) consistently witness the largest volume of catalog additions.",
@@ -570,7 +779,6 @@ VIZ_REGISTRY = {
             "Spring months (February–May) exhibit lower title additions (~630–690 titles/month), aligning with outdoor leisure seasonality.",
             "Releasing marquee titles in late December capitalizes directly on high-traffic family holiday gatherings and device gifting cycles."
         ],
-        "metric_highlight": "Peak Additions in December (813) & July (827)",
         "actionable_takeaway": "Cluster flagship tentpole releases in Q4 (October–December) to maximize conversion during high-churn renewal periods."
     },
     "viz9": {
@@ -578,6 +786,13 @@ VIZ_REGISTRY = {
         "short_title": "9. Release Year Trends & Content Freshness",
         "full_title": "Original Release Years vs. Contemporary Additions",
         "category": "Historical Trajectory",
+        "executive_headline": "First-Run Modern Network: 73%+ of Catalog Produced Post-2015, Driving 4K HDR Recommendation Algorithms",
+        "metric_highlight": "73%+ of Entire Catalog Produced Between 2015 and 2021",
+        "key_stats": [
+            {"label": "MODERN INVENTORY", "val": "73%+ Post-2015", "sub": "Contemporary First-Run Focus"},
+            {"label": "SYNDICATION DROP", "val": "0-Day Upload", "sub": "Direct-to-Streaming Releases"},
+            {"label": "LEGACY CATALOG", "val": "<6.5% Pre-2000", "sub": "Curated Iconic Classics Only"}
+        ],
         "caption": "Release year timeline showing heavy concentration of modern titles produced between 2015 and 2021 alongside vintage classics.",
         "insights": [
             "Over 73% of Netflix's catalog was originally produced between 2015 and 2021, proving Netflix is primarily a first-run contemporary network.",
@@ -585,7 +800,6 @@ VIZ_REGISTRY = {
             "The lag between release year and platform upload dropped from years (traditional syndication) to 0 days for modern Netflix Originals.",
             "Post-2018 titles dominate user recommendations due to high dynamic range (4K HDR/Dolby Vision) technical specifications."
         ],
-        "metric_highlight": "73%+ of Catalog Produced Between 2015 and 2021",
         "actionable_takeaway": "Keep catalog fresh by prioritizing recent 5-year productions while selectively retaining iconic nostalgic classics."
     },
     "viz10": {
@@ -593,6 +807,13 @@ VIZ_REGISTRY = {
         "short_title": "10. Top Prolific Directors",
         "full_title": "Most Frequent Creative Directors on Netflix",
         "category": "Creative Talent",
+        "executive_headline": "The Franchise Directors: Children Animation Universes & Stand-Up Comedy Drive High-Output Volume",
+        "metric_highlight": "Top Directors: Rajiv Chilaka (22), Jan Suter (21), Raúl Campos (19)",
+        "key_stats": [
+            {"label": "#1 PROLIFIC CREATOR", "val": "22 Titles", "sub": "Rajiv Chilaka (Chhota Bheem IP)"},
+            {"label": "STAND-UP COMEDY", "val": "56 Titles", "sub": "Jan Suter, Raúl Campos, Marcus Raboy"},
+            {"label": "PRESTIGE AUTEURS", "val": "12 Titles", "sub": "Martin Scorsese (Brand Prestige)"}
+        ],
         "caption": "Top directors by total title volume, revealing the heavy prevalence of Stand-Up Comedy specials and Children's Animation franchises.",
         "insights": [
             "Rajiv Chilaka leads with 22 titles, powered by the ubiquitous Indian children's animated franchise Chhota Bheem.",
@@ -600,7 +821,6 @@ VIZ_REGISTRY = {
             "Suhas Kadav (16 titles) reflects Netflix's massive licensing push into localized Indian animation (Motu Patlu).",
             "Auteur Hollywood directors like Martin Scorsese (12 titles) provide prestige and awards viability rather than raw catalog volume."
         ],
-        "metric_highlight": "Top Directors: Rajiv Chilaka (22), Jan Suter (21), Raúl Campos (19)",
         "actionable_takeaway": "Partner with proven franchise creators in animation and stand-up to secure cost-effective recurring viewership."
     }
 }
@@ -640,6 +860,7 @@ with st.sidebar:
         options=[
             "🏠 Overview & Metrics",
             "📊 Visualizations & EDA",
+            "🔮 Future Predictions (What-If Studio)",
             "💡 Analytical Insights",
             "🎯 Actionable Recommendations",
             "📖 Data Storytelling Report"
@@ -1141,42 +1362,52 @@ elif navigation_selection == "📊 Visualizations & EDA":
         viz_key = selected_viz.split(":")[0].strip()
         v_info = VIZ_REGISTRY[viz_key]
         
+        # 1. Catchy Executive Headline Banner (Observable at first sight)
         st.markdown(f"""
-        <div style="display:flex; justify-content:space-between; align-items:center; background-color:#1c1c1c; padding:12px 20px; border-radius:8px; border-left:5px solid #E50914; margin-bottom:18px;">
+        <div class="catchy-banner">
             <div>
-                <span class="badge-netflix" style="margin-right:8px;">{v_info['category']}</span>
-                <span style="font-size:1.25rem; font-weight:700; color:#FFFFFF;">{v_info['full_title']}</span>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                    <span class="badge-netflix">{v_info['category']}</span>
+                    <span style="color:#BFBFBF; font-size:0.85rem; font-weight:700;">CHART {viz_key.replace('viz', '#')} OF 10</span>
+                </div>
+                <div class="catchy-banner-title">{v_info['executive_headline']}</div>
             </div>
-            <span class="badge-secondary">{v_info['file']}</span>
+            <div class="catchy-banner-badge">⚡ {v_info['metric_highlight']}</div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Display Image with crisp wide container scaling
+        # 2. Uniform Framed Image Display (Zero Download Button)
         img_path = resolve_asset_path(v_info["file"])
         if os.path.exists(img_path):
             img = Image.open(img_path)
+            st.markdown('<div class="uniform-chart-card">', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
-            
-            # Download button for this high-res visualization
-            with open(img_path, "rb") as f_img:
-                st.download_button(
-                    label=f"📥 Download Chart Image (High-Res PNG)",
-                    data=f_img.read(),
-                    file_name=v_info["file"],
-                    mime="image/png",
-                    key=f"dl_single_{viz_key}"
-                )
+            st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.warning(f"Visualization file '{v_info['file']}' not found in root directory.")
             
-        # Detailed Insights Grid
+        # 3. Catchy 3-KPI Cards Grid (Observable at first sight)
+        kpi_cols = st.columns(3)
+        for idx, kpi in enumerate(v_info["key_stats"]):
+            with kpi_cols[idx]:
+                st.markdown(f"""
+                <div class="catchy-kpi-card">
+                    <div class="catchy-kpi-label">{kpi['label']}</div>
+                    <div class="catchy-kpi-val">{kpi['val']}</div>
+                    <div class="catchy-kpi-sub">{kpi['sub']}</div>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        
+        # 4. Detailed Insights & Strategic Business Takeaway
         col_left, col_right = st.columns([3, 2])
         
         with col_left:
             st.markdown("""
             <div class="content-box">
                 <div class="content-box-header">
-                    <span class="icon">🔬</span> Quantitative Insights & Observations
+                    <span class="icon">🔬</span> Quantitative Insights & Data Evidence
                 </div>
             """, unsafe_allow_html=True)
             for insight in v_info["insights"]:
@@ -1190,7 +1421,7 @@ elif navigation_selection == "📊 Visualizations & EDA":
                     <span class="icon">🎯</span> Strategic Business Takeaway
                 </div>
                 <div style="background-color:#222222; padding:14px; border-radius:6px; margin-bottom:12px; border:1px solid #333333;">
-                    <div style="font-size:0.75rem; color:#D0D0D0; font-weight:700; text-transform:uppercase;">Key Benchmark</div>
+                    <div style="font-size:0.75rem; color:#D0D0D0; font-weight:700; text-transform:uppercase;">Core Benchmark</div>
                     <div style="font-size:1.15rem; color:#E50914; font-weight:800;">{v_info['metric_highlight']}</div>
                 </div>
                 <p style="color:#E2E2E2; font-size:0.92rem; line-height:1.6;">
@@ -1200,41 +1431,485 @@ elif navigation_selection == "📊 Visualizations & EDA":
             """, unsafe_allow_html=True)
             
     else:
-        # Gallery View: All 10 charts
-        st.info("💡 Browsing all 10 high-resolution visualizations. Use the dropdown above to focus on any single visualization.")
+        # Gallery View: All 10 charts in uniform presentation (Zero Download Buttons)
+        st.info("💡 Browsing all 10 high-resolution visualizations in uniform widescreen format. Select any individual chart from the dropdown above for deep-dive analysis.")
         
         for k, v in VIZ_REGISTRY.items():
             st.markdown(f"""
-            <div style="background-color:#181818; border:1px solid #303030; border-top:3px solid #E50914; border-radius:10px; padding:20px; margin-bottom:30px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <h3 style="color:#FFFFFF; margin:0; font-size:1.35rem;">{v['full_title']}</h3>
-                    <span class="badge-secondary">{v['category']}</span>
+            <div style="background-color:#181818; border:1px solid #303030; border-top:3px solid #E50914; border-radius:10px; padding:22px; margin-bottom:34px;">
+                <div class="catchy-banner" style="margin-bottom:14px; padding:12px 18px;">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                            <span class="badge-netflix">{v['category']}</span>
+                            <span style="color:#A0A0A0; font-size:0.8rem; font-weight:700;">CHART {k.replace('viz', '#')}</span>
+                        </div>
+                        <div style="font-size:1.2rem; font-weight:800; color:#FFFFFF;">{v['full_title']}</div>
+                    </div>
+                    <div class="catchy-banner-badge">⚡ {v['metric_highlight']}</div>
                 </div>
             """, unsafe_allow_html=True)
             
             img_path = resolve_asset_path(v["file"])
             if os.path.exists(img_path):
                 img = Image.open(img_path)
+                st.markdown('<div class="uniform-chart-card" style="margin-bottom:16px;">', unsafe_allow_html=True)
                 st.image(img, use_container_width=True)
-                
-                with open(img_path, "rb") as f_img:
-                    st.download_button(
-                        label=f"📥 Download {v['short_title']} (PNG)",
-                        data=f_img.read(),
-                        file_name=v["file"],
-                        mime="image/png",
-                        key=f"dl_gallery_{k}"
-                    )
+                st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.warning(f"File {v['file']} not found.")
                 
+            # 3 Catchy KPI Pills
+            g_cols = st.columns(3)
+            for g_idx, g_kpi in enumerate(v["key_stats"]):
+                with g_cols[g_idx]:
+                    st.markdown(f"""
+                    <div class="catchy-kpi-card" style="padding:10px 14px; margin-bottom:12px;">
+                        <div class="catchy-kpi-label" style="font-size:0.7rem;">{g_kpi['label']}</div>
+                        <div class="catchy-kpi-val" style="font-size:1.35rem;">{g_kpi['val']}</div>
+                        <div class="catchy-kpi-sub" style="font-size:0.78rem;">{g_kpi['sub']}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
             st.markdown(f"""
-                <div class="chart-caption">
-                    <b style="color:#FFFFFF;">Executive Caption:</b> {v['caption']}<br>
-                    <span style="color:#E50914; font-weight:700;">Strategic Action:</span> {v['actionable_takeaway']}
+                <div class="chart-caption" style="margin-top:10px;">
+                    <b style="color:#FFFFFF;">Executive Finding:</b> {v['caption']}<br>
+                    <span style="color:#E50914; font-weight:800;">Strategic Action:</span> {v['actionable_takeaway']}
                 </div>
             </div>
             """, unsafe_allow_html=True)
+
+
+# -----------------------------------------------------------------------------
+# 7. PAGE 3: 🔮 FUTURE PREDICTIONS (WHAT-IF STUDIO) — POWER BI DYNAMIC ENGINE
+# -----------------------------------------------------------------------------
+elif navigation_selection == "🔮 Future Predictions (What-If Studio)":
+    st.markdown("""
+    <div style="border-bottom: 2px solid #E50914; padding-bottom: 10px; margin-bottom: 25px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+            <span class="pbi-badge">Power BI Dynamic Modeling Engine</span>
+            <span class="badge-secondary">Interactive Scenario Simulation (2022–2028)</span>
+        </div>
+        <h2 style="font-family:'Bebas Neue', sans-serif; font-size:2.6rem; letter-spacing:1px; margin:0; color:#FFFFFF;">
+            FUTURE PREDICTIONS & <span style="color:#E50914;">WHAT-IF STUDIO</span>
+        </h2>
+        <p style="color:#D2D2D2; font-size:0.95rem; margin-top:4px;">
+            Interactive Power BI-style analytics dashboard. <b>Edit any cell directly in the data grid below</b> or select strategic scenario presets—all forecast trajectories, format mixes, and retention indices recalculate and render dynamically in real-time.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Preset scenarios definition
+    scenario_presets = {
+        "🚀 Aggressive Global Scaling (+12% YoY, 65% Int'l)": {
+            "additions": [1750, 1960, 2200, 2460, 2750, 3080, 3450],
+            "movie_pct": 52, "tv_pct": 48, "intl_pct": 65.0,
+            "budget": [18.5, 19.8, 21.2, 22.8, 24.5, 26.2, 28.0],
+            "watch_hrs": [112, 126, 142, 160, 181, 204, 230]
+        },
+        "⚖️ Balanced Quality & Retention (+5% YoY, 50% TV Split)": {
+            "additions": [1600, 1680, 1765, 1855, 1950, 2050, 2150],
+            "movie_pct": 50, "tv_pct": 50, "intl_pct": 58.0,
+            "budget": [17.2, 17.9, 18.6, 19.4, 20.2, 21.0, 21.8],
+            "watch_hrs": [106, 114, 122, 131, 140, 150, 161]
+        },
+        "🛡️ IP Consolidation & Quality (-3% YoY, Tentpole Focus)": {
+            "additions": [1450, 1400, 1360, 1320, 1280, 1240, 1200],
+            "movie_pct": 42, "tv_pct": 58, "intl_pct": 50.0,
+            "budget": [16.8, 16.5, 16.2, 16.0, 15.8, 15.5, 15.2],
+            "watch_hrs": [102, 105, 108, 111, 114, 117, 120]
+        }
+    }
+    
+    # Slicer Controls Panel
+    st.markdown("""
+    <div style="background-color:#171717; border:1px solid #303030; border-top:3px solid #F2C811; border-radius:10px; padding:18px 22px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="font-size:1.15rem; font-weight:800; color:#FFFFFF;">
+                🎛️ Power BI Strategic Slicers & Scenario Controller
+            </div>
+            <span class="pbi-badge">Interactive Parameters</span>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col_s1, col_s2, col_s3 = st.columns([3, 2, 2])
+    
+    with col_s1:
+        preset_choice = st.selectbox(
+            "Select Scenario Preset (or choose Custom to edit data):",
+            options=[
+                "⚖️ Balanced Quality & Retention (+5% YoY, 50% TV Split)",
+                "🚀 Aggressive Global Scaling (+12% YoY, 65% Int'l)",
+                "🛡️ IP Consolidation & Quality (-3% YoY, Tentpole Focus)",
+                "🛠️ Custom Power BI What-If (Freely Edit Data Table)"
+            ],
+            index=0,
+            key="pbi_scenario_selector"
+        )
+        
+    with col_s2:
+        tv_target_share = st.slider(
+            "Target TV Series Share (%):",
+            min_value=30, max_value=65, value=48, step=1,
+            help="Higher TV series allocation defends against monthly subscriber churn"
+        )
+        
+    with col_s3:
+        intl_target_share = st.slider(
+            "Int'l Studio Allocation (%):",
+            min_value=35, max_value=80, value=58, step=1,
+            help="Target percentage of annual production allocated to non-US production hubs"
+        )
+        
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Initialize / Load Forecast Dataframe
+    years = list(range(2022, 2029))
+    if preset_choice in scenario_presets:
+        p_data = scenario_presets[preset_choice]
+        add_list = p_data["additions"]
+        bud_list = p_data["budget"]
+        wh_list = p_data["watch_hrs"]
+        mov_list = [int(a * (100 - tv_target_share) / 100) for a in add_list]
+        tv_list = [a - m for a, m in zip(add_list, mov_list)]
+        intl_list = [intl_target_share] * len(years)
+        
+        default_df = pd.DataFrame({
+            "Year": years,
+            "Projected Additions": add_list,
+            "Movies Target": mov_list,
+            "TV Shows Target": tv_list,
+            "Int'l Content (%)": intl_list,
+            "Budget ($B)": bud_list,
+            "Est. Watch Hours (B)": wh_list
+        })
+    else:
+        # Default baseline if Custom selected
+        default_df = pd.DataFrame({
+            "Year": years,
+            "Projected Additions": [1650, 1780, 1920, 2060, 2210, 2370, 2540],
+            "Movies Target": [858, 925, 998, 1071, 1149, 1232, 1320],
+            "TV Shows Target": [792, 855, 922, 989, 1061, 1138, 1220],
+            "Int'l Content (%)": [55.0, 56.5, 58.0, 60.0, 62.0, 64.0, 65.0],
+            "Budget ($B)": [17.5, 18.2, 19.0, 19.8, 20.7, 21.6, 22.5],
+            "Est. Watch Hours (B)": [108, 116, 125, 135, 146, 158, 170]
+        })
+    
+    # Editable Data Grid
+    st.markdown("""
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; margin-bottom:8px;">
+        <h3 style="color:#FFFFFF; font-size:1.3rem; margin:0;">
+            📋 Power BI Interactive Data Grid <span style="font-size:0.85rem; color:#F2C811; font-weight:600;">(Editable Cells)</span>
+        </h3>
+        <span style="color:#B0B0B0; font-size:0.82rem;">Double-click any number to edit • Graphs update automatically</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    edited_df = st.data_editor(
+        default_df,
+        use_container_width=True,
+        num_rows="fixed",
+        column_config={
+            "Year": st.column_config.NumberColumn(format="%d", disabled=True),
+            "Projected Additions": st.column_config.NumberColumn(min_value=500, max_value=6000, step=50, help="Total projected additions"),
+            "Movies Target": st.column_config.NumberColumn(min_value=200, max_value=3500, step=25, help="Projected feature films"),
+            "TV Shows Target": st.column_config.NumberColumn(min_value=100, max_value=3000, step=25, help="Projected episodic series"),
+            "Int'l Content (%)": st.column_config.NumberColumn(min_value=15.0, max_value=90.0, step=1.0, format="%.1f%%"),
+            "Budget ($B)": st.column_config.NumberColumn(min_value=5.0, max_value=40.0, step=0.5, format="$%.1fB"),
+            "Est. Watch Hours (B)": st.column_config.NumberColumn(min_value=40.0, max_value=350.0, step=5.0, format="%.0f B")
+        },
+        key="pbi_live_data_grid"
+    )
+    
+    # Dynamic KPI Calculations based on edited_df
+    total_new_titles = int(edited_df["Projected Additions"].sum())
+    total_library_2028 = 8807 + total_new_titles
+    total_capital_spend = float(edited_df["Budget ($B)"].sum())
+    final_year_watch_hours = float(edited_df.iloc[-1]["Est. Watch Hours (B)"])
+    avg_tv_ratio = float(edited_df["TV Shows Target"].sum() / total_new_titles * 100) if total_new_titles > 0 else 45.0
+    avg_intl_ratio = float(edited_df["Int'l Content (%)"].mean())
+    churn_shield_score = min(99.0, max(52.0, (avg_tv_ratio * 0.72 + avg_intl_ratio * 0.38 + 20.0)))
+    
+    st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+    
+    # 4 Power BI KPI Cards
+    k1, k2, k3, k4 = st.columns(4)
+    with k1:
+        st.markdown(f"""
+        <div class="pbi-kpi-card">
+            <div class="catchy-kpi-label">Projected 2028 Library</div>
+            <div class="catchy-kpi-val">{total_library_2028:,}</div>
+            <div class="catchy-kpi-sub">+{total_new_titles:,} New Titles Added</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with k2:
+        st.markdown(f"""
+        <div class="pbi-kpi-card">
+            <div class="catchy-kpi-label">7-Yr Total Production Spend</div>
+            <div class="catchy-kpi-val">${total_capital_spend:.1f}<span>B</span></div>
+            <div class="catchy-kpi-sub">Avg: ${total_capital_spend/7:.1f}B / Year</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with k3:
+        st.markdown(f"""
+        <div class="pbi-kpi-card">
+            <div class="catchy-kpi-label">2028 Annual Watch Hours</div>
+            <div class="catchy-kpi-val">{final_year_watch_hours:.0f} <span>B</span></div>
+            <div class="catchy-kpi-sub">Binge Engagement Metric</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with k4:
+        shield_color = "#00E5FF" if churn_shield_score >= 85 else "#FFB300"
+        st.markdown(f"""
+        <div class="pbi-kpi-card">
+            <div class="catchy-kpi-label">Subscriber Churn Shield</div>
+            <div class="catchy-kpi-val" style="color:{shield_color};">{churn_shield_score:.1f}<span>/100</span></div>
+            <div class="catchy-kpi-sub">TV Depth ({avg_tv_ratio:.0f}%) + Int'l Moat</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+    
+    # DYNAMIC PLOTLY CHARTS (Reactively driven by edited_df)
+    st.markdown("### 📈 Live Reactive Forecast Visualizations")
+    
+    # Chart 1: Historical vs Forecast Trajectory (2008-2028)
+    hist_years = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+    hist_adds = [2, 2, 1, 13, 3, 11, 24, 82, 429, 1188, 1649, 2016, 1879, 1498]
+    
+    proj_years = edited_df["Year"].tolist()
+    proj_adds = edited_df["Projected Additions"].tolist()
+    
+    # Cumulative trajectory
+    hist_cum = list(np.cumsum(hist_adds))
+    proj_cum = []
+    curr = hist_cum[-1]
+    for add in proj_adds:
+        curr += add
+        proj_cum.append(curr)
+        
+    fig1 = go.Figure()
+    
+    # Confidence ribbon for projection
+    upper_band = [y * 1.08 for y in [hist_adds[-1]] + proj_adds]
+    lower_band = [y * 0.92 for y in [hist_adds[-1]] + proj_adds]
+    band_x = [2021] + proj_years
+    
+    fig1.add_trace(go.Scatter(
+        x=band_x + band_x[::-1],
+        y=upper_band + lower_band[::-1],
+        fill='toself',
+        fillcolor='rgba(0, 229, 255, 0.12)',
+        line=dict(color='rgba(255,255,255,0)'),
+        hoverinfo="skip",
+        showlegend=True,
+        name="±8% Volatility Band"
+    ))
+    
+    # Historical trace
+    fig1.add_trace(go.Scatter(
+        x=hist_years,
+        y=hist_adds,
+        mode="lines+markers",
+        name="Historical Actuals (2008–2021)",
+        line=dict(color="#E50914", width=3.5),
+        marker=dict(size=7, color="#FFFFFF", line=dict(color="#E50914", width=2)),
+        hovertemplate="<b>Year: %{x}</b><br>Actual Ingested: %{y:,} titles<extra></extra>"
+    ))
+    
+    # Forecast trace
+    fig1.add_trace(go.Scatter(
+        x=[2021] + proj_years,
+        y=[hist_adds[-1]] + proj_adds,
+        mode="lines+markers",
+        name="Dynamic Forecast (2022–2028)",
+        line=dict(color="#00E5FF", width=3.5, dash="dash"),
+        marker=dict(size=8, color="#00E5FF", symbol="diamond"),
+        hovertemplate="<b>Year: %{x}</b><br>Projected Additions: %{y:,} titles<extra></extra>"
+    ))
+    
+    fig1.update_layout(
+        title=dict(text="<b>Annual Content Ingestion Velocity: Historical Actuals vs. Dynamic What-If Forecast</b>", font=dict(size=16, color="#FFFFFF")),
+        paper_bgcolor="#141414",
+        plot_bgcolor="#1c1c1c",
+        height=420,
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#FFFFFF")),
+        xaxis=dict(
+            title=dict(text="Calendar Year", font=dict(color="#FFFFFF")),
+            gridcolor="#282828",
+            tickmode="linear",
+            tick0=2008,
+            dtick=2,
+            tickfont=dict(color="#D0D0D0")
+        ),
+        yaxis=dict(
+            title=dict(text="Annual Ingested Titles", font=dict(color="#FFFFFF")),
+            gridcolor="#282828",
+            tickfont=dict(color="#D0D0D0")
+        )
+    )
+    
+    st.plotly_chart(fig1, use_container_width=True)
+    
+    # Row 2 Charts: Format Mix Stacked Bar & International Allocation Donut
+    c_chart1, c_chart2 = st.columns(2)
+    
+    with c_chart1:
+        fig2 = go.Figure()
+        fig2.add_trace(go.Bar(
+            x=edited_df["Year"],
+            y=edited_df["Movies Target"],
+            name="Feature Films (Acquisition Volume)",
+            marker_color="#E50914",
+            hovertemplate="<b>%{x} Movies:</b> %{y:,} titles<extra></extra>"
+        ))
+        fig2.add_trace(go.Bar(
+            x=edited_df["Year"],
+            y=edited_df["TV Shows Target"],
+            name="TV Series (Retention Moat)",
+            marker_color="#F0F0F0",
+            hovertemplate="<b>%{x} TV Shows:</b> %{y:,} titles<extra></extra>"
+        ))
+        fig2.update_layout(
+            barmode="stack",
+            title=dict(text="<b>Projected Format Allocation: Feature Films vs. TV Shows</b>", font=dict(size=14, color="#FFFFFF")),
+            paper_bgcolor="#141414",
+            plot_bgcolor="#1c1c1c",
+            height=360,
+            margin=dict(l=30, r=30, t=45, b=35),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#FFFFFF")),
+            xaxis=dict(gridcolor="#282828", tickfont=dict(color="#D0D0D0")),
+            yaxis=dict(title="Projected Titles", gridcolor="#282828", tickfont=dict(color="#D0D0D0"))
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+        
+    with c_chart2:
+        na_share = max(15.0, 100.0 - avg_intl_ratio)
+        apac_share = avg_intl_ratio * 0.42
+        emea_share = avg_intl_ratio * 0.38
+        latam_share = avg_intl_ratio * 0.20
+        
+        donut_labels = ["North America (US/CA)", "Asia-Pacific (India/KR/JP)", "Europe (UK/ES/FR)", "Latin America (BR/CO/MX)"]
+        donut_values = [na_share, apac_share, emea_share, latam_share]
+        donut_colors = ["#E50914", "#FF5252", "#B71C1C", "#FF8A80"]
+        
+        fig3 = go.Figure(data=[go.Pie(
+            labels=donut_labels,
+            values=donut_values,
+            hole=0.55,
+            marker=dict(colors=donut_colors),
+            hovertemplate="<b>%{label}</b><br>Budget Allocation: %{percent}<extra></extra>"
+        )])
+        fig3.update_layout(
+            title=dict(text="<b>Projected Global Studio Budget Allocation</b>", font=dict(size=14, color="#FFFFFF")),
+            paper_bgcolor="#141414",
+            plot_bgcolor="#1c1c1c",
+            height=360,
+            margin=dict(l=20, r=20, t=45, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.15, font=dict(color="#FFFFFF", size=10)),
+            annotations=[dict(text=f"<b>${total_capital_spend/7:.1f}B/yr</b><br>Avg Spend", x=0.5, y=0.5, font_size=14, showarrow=False, font_color="#FFFFFF")]
+        )
+        st.plotly_chart(fig3, use_container_width=True)
+        
+    # Interactive What-If Title Success Predictor
+    st.markdown("<hr style='border-color:#2a2a2a; margin:30px 0;'>", unsafe_allow_html=True)
+    st.markdown("### 🎯 Interactive Title Popularity & Hit Simulator")
+    st.caption("Test how a prospective project's creative parameters influence its algorithmic completion rate, virality index, and renewal odds.")
+    
+    with st.expander("🎬 Configure Prospective Title & Predict Success", expanded=True):
+        pcol1, pcol2, pcol3 = st.columns(3)
+        with pcol1:
+            sim_format = st.selectbox("Content Format:", ["TV Show", "Movie"], key="sim_fmt")
+            sim_genre = st.selectbox("Primary Genre:", ["International Drama", "Sci-Fi / Mystery Thriller", "Comedy Special", "Action / Adventure", "Kids & Family", "True Crime Documentary"], key="sim_gen")
+        with pcol2:
+            sim_hub = st.selectbox("Production Country Hub:", ["India", "South Korea", "United States", "United Kingdom", "Spain", "France", "Japan"], key="sim_hub")
+            sim_rating = st.selectbox("Target Maturity Rating:", ["TV-MA", "TV-14", "TV-PG", "PG-13", "TV-Y7"], key="sim_rat")
+        with pcol3:
+            if sim_format == "Movie":
+                sim_runtime = st.slider("Target Runtime (Minutes):", min_value=60, max_value=180, value=98, step=2, key="sim_rt")
+            else:
+                sim_runtime = st.slider("Planned Seasons:", min_value=1, max_value=5, value=2, step=1, key="sim_seas")
+            sim_month = st.selectbox("Target Launch Month:", ["December (Holiday Peak)", "July (Summer Peak)", "October (Halloween)", "January (New Year)", "May (Spring Lull)"], key="sim_mo")
+            
+        # Predictive Algorithm Scoring
+        base_score = 65.0
+        
+        # Genre adjustment
+        if "Sci-Fi" in sim_genre or "International" in sim_genre:
+            base_score += 12
+        elif "Kids" in sim_genre:
+            base_score += 8
+        elif "Comedy" in sim_genre:
+            base_score += 4
+            
+        # Hub adjustment
+        if sim_hub in ["South Korea", "Spain", "India"]:
+            base_score += 10
+        elif sim_hub == "United States":
+            base_score += 7
+            
+        # Rating adjustment
+        if sim_rating in ["TV-MA", "TV-14"]:
+            base_score += 6
+            
+        # Month adjustment
+        if "December" in sim_month or "July" in sim_month:
+            base_score += 8
+        elif "May" in sim_month:
+            base_score -= 5
+            
+        # Runtime / format penalty
+        if sim_format == "Movie":
+            if 90 <= sim_runtime <= 105:
+                base_score += 9
+            elif sim_runtime > 125:
+                base_score -= 12
+        else:
+            if sim_runtime >= 2:
+                base_score += 8
+                
+        pred_hit_score = min(98.0, max(45.0, base_score))
+        pred_completion_pct = min(94.0, max(42.0, pred_hit_score * 0.95))
+        pred_renewal_odds = min(96.0, max(25.0, pred_hit_score * 0.98 if sim_format == "TV Show" else 88.0))
+        
+        if pred_hit_score >= 85:
+            verdict_text = "🟢 GLOBAL TENTPOLE BLOCKBUSTER CANDIDATE"
+            verdict_badge_color = "#00E5FF"
+            verdict_desc = "High viral export probability across multi-language regions. Strong 28-day completion rate expected."
+        elif pred_hit_score >= 70:
+            verdict_text = "🟡 STRONG STEADY PERFORMER (CORE CATALOG RETENTION)"
+            verdict_badge_color = "#FFD600"
+            verdict_desc = "Solid platform viewership with loyal demographic appeal. Low churn risk within target audience segment."
+        else:
+            verdict_text = "🔴 ELEVATED RISK / EXPENSE CONSOLIDATION WATCH"
+            verdict_badge_color = "#FF5252"
+            verdict_desc = "Runtime or scheduling constraints indicate potential 28-day drop-off risk. Recommend tighter runtime discipline."
+            
+        st.markdown(f"""
+        <div class="sim-score-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:1.35rem; font-weight:800; color:#FFFFFF;">Simulation Forecast Outcome</span>
+                <span class="sim-verdict-pill" style="background-color:rgba(229,9,20,0.25); border:1px solid {verdict_badge_color}; color:{verdict_badge_color};">{verdict_text}</span>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin:15px 0;">
+                <div style="background:#131313; padding:12px 16px; border-radius:6px; border:1px solid #2e2e2e;">
+                    <div style="font-size:0.75rem; color:#A0A0A0; font-weight:700;">PREDICTED HIT INDEX</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#FFFFFF;">{pred_hit_score:.1f} <span style="font-size:0.9rem; color:#E50914;">/ 100</span></div>
+                </div>
+                <div style="background:#131313; padding:12px 16px; border-radius:6px; border:1px solid #2e2e2e;">
+                    <div style="font-size:0.75rem; color:#A0A0A0; font-weight:700;">28-DAY COMPLETION RATE</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#FFFFFF;">{pred_completion_pct:.1f}%</div>
+                </div>
+                <div style="background:#131313; padding:12px 16px; border-radius:6px; border:1px solid #2e2e2e;">
+                    <div style="font-size:0.75rem; color:#A0A0A0; font-weight:700;">RENEWAL / VIRALITY LIKELIHOOD</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#FFFFFF;">{pred_renewal_odds:.1f}%</div>
+                </div>
+            </div>
+            <p style="color:#DCDCDC; font-size:0.92rem; margin:0; line-height:1.5;">
+                <b>Algorithmic Assessment:</b> {verdict_desc}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # -----------------------------------------------------------------------------

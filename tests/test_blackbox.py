@@ -29,6 +29,7 @@ def run_tests():
         "📊 Visualizations & EDA",
         "💡 Analytical Insights",
         "🎯 Actionable Recommendations",
+        "🔮 Future Predictions (What-If Studio)",
         "📖 Data Storytelling Report"
     ]
     
@@ -139,6 +140,27 @@ def run_tests():
     reset_quiz_btn.click().run()
     assert not at.exception, f"Exception on reset quiz: {at.exception}"
     print("[PASS] Interactive Quiz correctly handles correct answers, incorrect answers, and answer resets.")
+
+    # BB-08: Future Predictions (What-If Studio) Power BI Interactivity
+    print("\n--- BB-08: Future Predictions (What-If Studio) Power BI Testing ---")
+    at.sidebar.radio[0].set_value("🔮 Future Predictions (What-If Studio)").run()
+    assert not at.exception, f"Exception loading Future Predictions page: {at.exception}"
+    print("[PASS] '🔮 Future Predictions (What-If Studio)' loaded with 0 exceptions.")
+    
+    # Check scenario preset switching on main page
+    preset_sb = at.main.selectbox[0] # The Scenario Preset selector in main area
+    scenarios = preset_sb.options
+    for sc in scenarios:
+        preset_sb.set_value(sc).run()
+        assert not at.exception, f"Exception switching scenario to '{sc}': {at.exception}"
+    print(f"[PASS] Successfully cycled through all {len(scenarios)} prediction scenarios: {scenarios}")
+
+    # Test What-If Hit Simulator interaction
+    sim_btn = [b for b in at.main.button if "Simulate Title Performance" in str(b.label)]
+    if sim_btn:
+        sim_btn[0].click().run()
+        assert not at.exception, f"Exception clicking Hit Simulator: {at.exception}"
+        print("[PASS] Title Popularity Simulator evaluated and rendered predictions successfully.")
 
     print("\n" + "=" * 70)
     print("ALL INITIAL BLACK-BOX AUTOMATED TESTS EXECUTED!")
